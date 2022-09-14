@@ -1,0 +1,137 @@
+/*                                   Pagina general            */
+
+body {
+    min-height: 100%;
+}
+
+div.pagina {
+    display: flex;
+}
+
+
+/*                                       Navegador                  */
+#img-logo{
+    width: 50%;
+    max-width: 125px;
+    max-height: 125px;
+    /* margin-top: 18px; */
+}
+nav.nav-list {
+    background: #1a1a1a;
+    box-shadow: 0 0 15px 0 rgb(0 0 0 / 60%) !important;
+    width: 15%;
+}
+
+nav.nav-list ul li a{
+    padding: 20px;
+    color: #c7c7c7;
+}
+
+nav.nav-list ul li a:hover{
+    border-left: 5px solid #c7c7c7;
+}
+
+div.top-nav-column{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    color: white;
+}
+
+/*                                   Contenido de login encabezado              */
+header{
+    display: flex;
+    grid-area: header;
+    box-shadow: 0 2px 0 0 rgb(26 26 26 / 10%) !important;
+}
+
+header div.title {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    width: 50%;
+}
+div.title h1{
+    font-size: 1.5rem;
+    margin: 5px 0px 5px 50px;
+}
+header div.login{
+    display: flex;
+    justify-content: end;
+    margin-right: 40px;
+    align-items: center;
+    width: 50%;
+}
+header div.login input{
+    margin-right: 5px;
+}
+
+.btn-login{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    height: 61%;
+    background-color: #6c757d;
+    border-color: #6c757d;
+    margin-right: 11px;
+}
+/*                                   Search                                */
+div.content-top-page {
+    display: flex;
+    padding: 30px 0px 30px 0px;
+    justify-content: space-around;
+    align-items: center;
+}
+.content-title {
+    padding-left: 50px;
+    width: 40%;
+}
+div.new-libro {
+    display: flex;
+    margin-right: 5%;
+    justify-content: flex-end;
+    width: 60%;
+}
+select.form-select {
+    margin-right: 10px;
+}
+
+/*                                   Contenido de pagina                 */
+div.content {
+    width: 100%;
+}
+div.content-top-page{
+    display: flex;
+    padding: 30px 0px 30px 0px;
+    justify-content: space-around;
+    align-items: center;
+}
+.title-add-genero{
+    display: flex;
+    padding: 30px 0px 30px 0px;
+}
+
+.content-title{
+    padding-left: 50px;
+    width: 40%;
+}
+/* TABLA */
+div.main-table, div.title-table{
+    margin: 4% 50px 0px 50px;
+    min-height: 900px;
+}
+
+/*                                      Footer                              */
+footer {
+    display: flex;
+    grid-area: footer;
+    justify-content: center;
+    padding: 20px 0px 5px 0px;
+    background-color: #1c1c1c;
+    margin-block-end: auto;
+}
+footer div h5 {
+    color: #c7c7c7;
+}
