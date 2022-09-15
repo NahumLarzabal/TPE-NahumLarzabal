@@ -1,0 +1,18 @@
+CATEGORIAS // insertar
+
+INSERT INTO `categorias` (`id_categoria`, `categoria`) VALUES (NULL, 'Novela')
+
+LIBROS // insertar
+
+INSERT INTO `libros` (`id`, `autor`, `nombre_libro`, `descripcion`, `precio`, `id_categoria`) VALUES (NULL, 'José Mauro de Vasconcelos', , '1178', '1');
+
+
+
+LIBROS // MODIFICAR
+
+UPDATE `libros` SET `autor` = 'kakaka', `nombre_libro` = 'pepito', `descripcion` = 'ssadasasdasda', `precio` = '1444', `id_categoria` = '5' WHERE `libros`.`id` = 5;
+
+
+LIBROS // ELIMINAR
+"DELETE FROM `libros` WHERE `libros`.`id` = 3"?
+

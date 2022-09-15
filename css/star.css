@@ -1,0 +1,9 @@
+
+.checked {
+    color : rgb(89, 89, 211);
+    font-size : 20px;
+}
+.unchecked {
+    color: grey;
+    font-size : 20px;
+}
