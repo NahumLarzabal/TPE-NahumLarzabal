@@ -14,27 +14,31 @@ class ComentariosModel{
     }
  
     function getComentarioLibroDesc($id){
-        $sentencia = $this->db->prepare( "SELECT comentarios.id,comentarios.puntuacion,comentarios.comentarios,comentarios.id_libro, users.nombre_apellido, users.tipoUser FROM comentarios JOIN users ON comentarios.id_user = users.id WHERE id_libro=? order by comentarios.id desc");
+        $sentencia = $this->db->prepare( "SELECT comentarios.id,comentarios.puntuacion,comentarios.comentarios,comentarios.id_libro, 
+        users.nombre_apellido, users.tipoUser FROM comentarios JOIN users ON comentarios.id_user = users.id WHERE id_libro=? order by comentarios.id desc");
         $sentencia->execute(array($id));
         $commet = $sentencia->fetchAll(PDO::FETCH_OBJ);
         return $commet;
     }
     function getComentarioLibroDescPunt($id,$puntuacion){
-        $sentencia = $this->db->prepare( "SELECT comentarios.id,comentarios.puntuacion,comentarios.comentarios,comentarios.id_libro, users.nombre_apellido, users.tipoUser FROM comentarios JOIN users ON comentarios.id_user = users.id WHERE id_libro=? and puntuacion=? order by comentarios.id desc");
+        $sentencia = $this->db->prepare( "SELECT comentarios.id,comentarios.puntuacion,comentarios.comentarios,comentarios.id_libro, 
+        users.nombre_apellido, users.tipoUser FROM comentarios JOIN users ON comentarios.id_user = users.id WHERE id_libro=? and puntuacion=? order by comentarios.id desc");
         $sentencia->execute(array($id,$puntuacion));
         $commet = $sentencia->fetchAll(PDO::FETCH_OBJ);
         return $commet;
     }
 
     function getComentarioLibroAsc($id){
-        $sentencia = $this->db->prepare( "SELECT comentarios.id,comentarios.puntuacion,comentarios.comentarios,comentarios.id_libro, users.nombre_apellido, users.tipoUser FROM comentarios JOIN users ON comentarios.id_user = users.id WHERE id_libro=? order by comentarios.id asc");
+        $sentencia = $this->db->prepare( "SELECT comentarios.id,comentarios.puntuacion,comentarios.comentarios,comentarios.id_libro, 
+        users.nombre_apellido, users.tipoUser FROM comentarios JOIN users ON comentarios.id_user = users.id WHERE id_libro=? order by comentarios.id asc");
         $sentencia->execute(array($id));
         $commet = $sentencia->fetchAll(PDO::FETCH_OBJ);
         return $commet;
     }
     
     function getComentarioLibroAscPunt($id,$puntuacion){
-        $sentencia = $this->db->prepare( "SELECT comentarios.id,comentarios.puntuacion,comentarios.comentarios,comentarios.id_libro, users.nombre_apellido, users.tipoUser FROM comentarios JOIN users ON comentarios.id_user = users.id WHERE id_libro=? and puntuacion=? order by comentarios.id asc");
+        $sentencia = $this->db->prepare( "SELECT comentarios.id,comentarios.puntuacion,comentarios.comentarios,comentarios.id_libro, 
+        users.nombre_apellido, users.tipoUser FROM comentarios JOIN users ON comentarios.id_user = users.id WHERE id_libro=? and puntuacion=? order by comentarios.id asc");
         $sentencia->execute(array($id,$puntuacion));
         $commet = $sentencia->fetchAll(PDO::FETCH_OBJ);
         return $commet;
