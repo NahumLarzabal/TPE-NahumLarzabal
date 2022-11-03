@@ -46,7 +46,19 @@
     </div>
   </div>
 
+  <div>
+    <h1 class="comentarios">Comentarios</h1>
+  </div>
 
+<div id="apiComentarios">
+{if isset($email) && ($rol == "4")}
+{include file='templates/vue/comentarios.tpl'}
+{else}
+{include file='templates/vue/insertComentario.tpl'}
+{include file='templates/vue/comentarios.tpl'}
+{/if}
+</div>
+<script src="./js/comentarios.js"></script>
 <script src="./js/starrr.js"></script>
 {include file='templates/anuncio.tpl'}
 {include file='templates/footer.tpl'}

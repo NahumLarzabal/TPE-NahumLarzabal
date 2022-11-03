@@ -12,7 +12,7 @@ class userModel{
         $query->execute([$email]);
         return $query->fetch(PDO::FETCH_OBJ);
     }
-
+   
     function getUsers(){
         $query = $this->db->prepare('SELECT * FROM users');
         $query->execute();

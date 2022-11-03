@@ -25,11 +25,25 @@ class LibroModel{
         $libros = $sentencia->fetchAll(PDO::FETCH_OBJ);
         return $libros;
     }  
+    function getLibrosX(){
+        $sentencia = $this->db->prepare( "SELECT libros.id, libros.autor, libros.nombre_libro, libros.precio, categorias.categoria, 
+        libros.id_categoria, libros.imagen FROM libros JOIN categorias ON libros.id_categoria = categorias.id_categoria ");
+        $sentencia->execute();
+        $libros = $sentencia->fetchAll(PDO::FETCH_OBJ);
+        return $libros;
+    }  
     
     function getLibro($id){
         $sentencia = $this->db->prepare( "SELECT libros.id, libros.autor, libros.nombre_libro, libros.descripcion, libros.precio, libros.imagen,
          libros.id_categoria,categorias.categoria FROM libros JOIN categorias ON libros.id_categoria = categorias.id_categoria WHERE id=?;");
         $sentencia->execute(array($id));
+        $libro = $sentencia->fetch(PDO::FETCH_OBJ);
+        return $libro;
+    }
+
+    function getLibroName($id){
+        $sentencia = $this->db->prepare( "SELECT id, nombre_libro FROM libros WHERE nombre_libro=?;");
+        $sentencia->execute([$id]);
         $libro = $sentencia->fetch(PDO::FETCH_OBJ);
         return $libro;
     }

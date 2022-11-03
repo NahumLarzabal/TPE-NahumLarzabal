@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 12-10-2022 a las 22:43:28
+-- Tiempo de generación: 30-05-2022 a las 22:11:48
 -- Versión del servidor: 10.4.19-MariaDB
 -- Versión de PHP: 8.0.6
 
@@ -46,6 +46,54 @@ INSERT INTO `categorias` (`id_categoria`, `categoria`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `comentarios`
+--
+
+CREATE TABLE `comentarios` (
+  `id` int(11) NOT NULL,
+  `comentarios` varchar(255) NOT NULL,
+  `puntuacion` int(11) NOT NULL,
+  `id_libro` int(11) NOT NULL,
+  `id_user` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Volcado de datos para la tabla `comentarios`
+--
+
+INSERT INTO `comentarios` (`id`, `comentarios`, `puntuacion`, `id_libro`, `id_user`) VALUES
+(13, 'l;lk;lk', 1, 44, 1),
+(14, 'sadfdsf', 2, 44, 1),
+(15, 'asdas', 0, 44, 1),
+(16, 'asd', 1, 40, 1),
+(35, 'hola que tal', 4, 1, 1),
+(36, 'Hola que tal', 5, 41, 1),
+(37, 'aaaaaaa', 0, 41, 1),
+(38, 'a', 3, 41, 1),
+(39, 'a', 2, 41, 1),
+(40, 'aaaaaaa', 1, 41, 1),
+(41, 'a', 4, 41, 1),
+(42, 'a', 2, 41, 1),
+(43, 'a', 0, 41, 1),
+(44, 'b', 0, 41, 1),
+(45, 'ultimo', 2, 41, 1),
+(46, 'aaaaaa', 3, 41, 1),
+(47, 'a', 2, 1, 1),
+(48, 'sdasdd', 5, 1, 1),
+(55, 'asdasd', 2, 4, 1),
+(56, 'aaaaa', 3, 4, 1),
+(57, 'a', 4, 4, 1),
+(58, 'aa', 2, 33, 1),
+(59, 'aaaaa', 3, 33, 1),
+(60, 'asdasd', 2, 52, 1),
+(62, 'adsad', 2, 1, 1),
+(63, 'asdasdasd', 3, 1, 1),
+(64, 'aaaaa', 2, 1, 1),
+(65, 'a', 0, 1, 1);
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `libros`
 --
 
@@ -64,14 +112,14 @@ CREATE TABLE `libros` (
 --
 
 INSERT INTO `libros` (`id`, `autor`, `nombre_libro`, `descripcion`, `precio`, `id_categoria`, `imagen`) VALUES
-(1, 'C.S. Lewis1', 'Las crónicas de Narnia: el príncipe Caspian', 'Las Crónicas de Narnia: El príncipe Caspian (título original en inglés: The Chronicles of Narnia: Prince Caspian) es una película de acción y fantasía dirigida por Andrew Adamson y basada en la novela homónima de C. S. Lewis. Producida por Walden Media y distribuida por Walt Disney Pictures, se estrenó el 16 de mayo de 2008 en Estados Unidos. Es la segunda entrega de la saga Las Crónicas de Narnia.  ', 3500, 3, 'img/portadas/63239350b9de7.jpg'),
+(1, 'C.S. Lewis1', 'Las Crónicas de Narnia: El león, la bruja y el ropero1', '                                                                                 Las Crónicas de Narnia (título original en inglés: The Chronicles of Narnia) es una heptalogía de libros juveniles escrita por el escritor y profesor anglo-irlandés C. S. Lewis entre 1950 y 1956, e ilustrado, en su versión original, por Pauline Baynes. Re1\r\n        \r\n        \r\n        \r\n        \r\n        \r\n        \r\n        \r\n        ', 35562, 3, NULL),
 (4, 'José Mauro de Vasconcelo', 'Mi planta de naranja lima', '          Mi planta de naranja lima (en portugués O Meu Pé de Laranja Lima) es una novela de José Mauro de Vasconcelos, una de las más leídas de la nueva literatura brasileña. El autor continúa la historia en Vamos a calentar el sol. Está narrada en primera persona y posee un altísimo nivel autobiográfico.\r\nEncabezó la lista de superventas en 1968, año de su primera edición. Posteriormente, la novela fue traducida a 32 idiomas y publicada en 19 países. Ha sido adoptado como texto lectura a nivel de enseñanza primaria.1​\r\nTres telenovelas se han realizado sobre la base de esta obra: en 1970 para la Rede Tupi, y en 1980 y 1998 para la Rede Bandeirantes. También se han realizado varias adaptaciones al cine, televisión y teatro, siendo dirigida por Aurelio Teixeira la primera para el cine en 1970.2​ En el 2011 se ha presentado su segunda versión cinematográfica.3​   \r\n        ', 11781, 5, NULL),
 (31, 'garcia', 'asdasd11', '363edfgdfg', 222, 6, ''),
 (32, 'garcia', 'sadda', '1', 2, 3, ''),
-(33, 'C.S. Lewis', 'Narnia - El león, la bruja y el armario', ' The Lion, the Witch and the Wardrobe (titulada El león, la bruja y el ropero en la versión de la Editorial Andrés Bello y El león, la bruja y el armario en Ediciones Destino) es una novela fantástica infantil publicada por C. S. Lewis en 1950. Es el libro más conocido de la serie de siete libros llamada Las Crónicas de Narnia. Aunque en orden de publicación fue el primer libro de la serie escrito por el autor, es en realidad el segundo según la cronología interna, tras El sobrino del mago.\r\n        ', 2530, 3, 'img/portadas/632392ea92394.jpg'),
+(33, 'asdasd1231', 'asdasdasdsa', '          657641\r\n        ', 11, 1, NULL),
 (39, '123d1231', 'asdas213sa', 'lal3llala', 34567, 5, ''),
 (40, 'asdas', 'asd', '          asdasd', 34, 5, ''),
-(41, 'autor', 'asdasd22211', '                              descrrp\r\n        \r\n        \r\n        ', 123456, 2, 'img/portadas/633f438cc0667.jpg'),
+(41, 'autor', 'asdasd', 'descrrp', 123456, 2, ''),
 (44, 'Peron', 'PEron', '                    Peron            \r\n        \r\n        ', 100, 2, NULL),
 (52, 'a', 'a', '            aaa', 2, 6, NULL);
 
@@ -108,6 +156,14 @@ ALTER TABLE `categorias`
   ADD PRIMARY KEY (`id_categoria`);
 
 --
+-- Indices de la tabla `comentarios`
+--
+ALTER TABLE `comentarios`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `id_libro` (`id_libro`),
+  ADD KEY `id_user` (`id_user`);
+
+--
 -- Indices de la tabla `libros`
 --
 ALTER TABLE `libros`
@@ -131,6 +187,12 @@ ALTER TABLE `categorias`
   MODIFY `id_categoria` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
 
 --
+-- AUTO_INCREMENT de la tabla `comentarios`
+--
+ALTER TABLE `comentarios`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=68;
+
+--
 -- AUTO_INCREMENT de la tabla `libros`
 --
 ALTER TABLE `libros`
@@ -145,6 +207,13 @@ ALTER TABLE `users`
 --
 -- Restricciones para tablas volcadas
 --
+
+--
+-- Filtros para la tabla `comentarios`
+--
+ALTER TABLE `comentarios`
+  ADD CONSTRAINT `comentarios_ibfk_2` FOREIGN KEY (`id_user`) REFERENCES `users` (`id`),
+  ADD CONSTRAINT `comentarios_ibfk_3` FOREIGN KEY (`id_libro`) REFERENCES `libros` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `libros`
