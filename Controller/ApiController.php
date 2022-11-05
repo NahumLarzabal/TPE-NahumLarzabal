@@ -178,12 +178,19 @@ class ApiController{
      /* ----------------------------- Libros ----------------------- */
 
     function getLibros(){
-         if(!empty($_GET['orderby'])&&!empty($_GET['page'])&& !empty($_GET['limit'])&&!empty($_GET['sort'])){
+        if(!empty($_GET['sort']))
+        if($this->modelLibro->valueSort($_GET['sort'])==0){
+            return $this->view->response("la columna ".$_GET['sort']." no existe, las que existen son: autor, nombre_libro, descripcion, precio, categoria, id_categoria, imagen",404);
+        }
+        if(!empty($_GET['orderby'])&&!empty($_GET['page'])&& !empty($_GET['limit'])&&!empty($_GET['sort'])){
+            
             $order = $_GET['orderby'];
             $page =$_GET['page'];
             $limit = $_GET['limit'];
             $sort = $_GET['sort'];
             $comment = $this->modelLibro->getLibrosAll($sort,$order,$page,$limit);
+           
+            
         }else if(!empty($_GET['orderby'])&&!empty($_GET['sort'])){
               if($_GET['orderby'] == "DESC"|| $_GET['orderby']  == "desc" || $_GET['orderby']  == "ASC"|| $_GET['orderby']  == "asc"){
                   $comment = $this->modelLibro->getLibrosAll($_GET['sort'],$_GET['orderby']);    
@@ -199,7 +206,7 @@ class ApiController{
         }else{
             $comment = $this->modelLibro->getLibrosAll();
         }
-        return $this->view->response($comment,200);
+        return $this->view->response($comment,200); 
 
     }
 
@@ -215,12 +222,44 @@ class ApiController{
  
     function insertLibro(){
         $body = $this->getBody();
+        $valueCategory = $this->modelCategoria->valueCategory($body->genero);
+        $valueName = $this->modelLibro->getLibroName($body->nombre_libro);
         if(!empty($body)){
-            $this->modelLibro->insertLibro($body->autor,$body->nombre_libro,$body->descripcion,$body->precio,2,$body->imagen);
+            if($valueName==false){
+                if($valueCategory > 0){
+
+                    $this->modelLibro->insertLibro($body->autor,$body->nombre_libro,$body->descripcion,$body->precio,2,$body->imagen);
+                }else{
+                    return $this->view->response("la categoria no existe",404);
+
+                }
+            }else{
+                return $this->view->response("el libro ya existe",404);
+            }
+
         }else{
             return $this->view->response("el libro no se pudo agregar",404);
         }
-        return $this->view->response($body,200);
+        return $this->view->response($body,200); 
+    }
+
+    function deleteLibro($params){
+        $id = $params[':ID'];
+        // el valueCategory devuelve 0 o 1
+        $valueCategory = $this->modelLibro->getLibroName($id);
+        $valueID = $this->modelLibro->getLibro($id);
+        if(!empty($valueID)){
+            $this->modelLibro->deleteLibroFromDB($id);
+            return $this->view->response("eliminado $id",200);
+        }else if($valueCategory!=0){
+            $this->modelLibro->deleteLibro($id);
+            return $this->view->response("eliminado categoria: $id",200);
+        }else{
+            return $this->view->response("la categoria no se pudo eliminar porque no existe",404);
+
+        }
+
+
     }
 
     /* ------------------------- Categorias ---------------------- */
@@ -256,10 +295,9 @@ class ApiController{
     function insertCategoria(){
         $body = $this->getBody();
         $valueCategory=$this->modelCategoria->valueCategory($body->categoria);
-        var_dump($valueCategory);
         if(!empty($body)){
             if($valueCategory == 0){
-            $this->modelCategoria->insertCategoria($body->categoria);
+                $this->modelCategoria->insertCategoria($body->categoria);
             }else{
                 return $this->view->response("la categoria ya existe",404);
             }
@@ -268,7 +306,25 @@ class ApiController{
         }
         return $this->view->response($body,200);
     }
+    
+    function deleteCategoria($params){
+        $id = $params[':ID'];
+        // el valueCategory devuelve 0 o 1
+        $valueCategory = $this->modelCategoria->valueCategory($id);
+        $valueID = $this->modelCategoria->getGenero($id);
+        if(!empty($valueID)){
+            $this->modelCategoria->deleteCategoriaFromDB($id);
+            return $this->view->response("eliminado $id",200);
+        }else if($valueCategory!=0){
+            $this->modelCategoria->deleteCategoria($id);
+            return $this->view->response("eliminado categoria: $id",200);
+        }else{
+            return $this->view->response("la categoria no se pudo eliminar porque no existe",404);
 
+        }
+
+
+    }
 
     /* -------------------------- User ---------------------------- */
      
@@ -288,12 +344,7 @@ class ApiController{
         $user = $this->userModel->getUsers();
     }
         return $this->view->response($user,200);
-       /*  $user = $this->userModel->getUsers();
-        if(isset($user)){
-            return $this->view->response($user,200);
-        }else{
-            return $this->view->response("no hay contenido",400);
-        } */
+       
     }
     
 
@@ -308,14 +359,21 @@ class ApiController{
     }
 
     function insertUser(){
-        $body = $this->getBody();
-        $valueUser=$this->userModel->getUser($body->email);
-        //hay que hacer un hash a la password para q venga por Byts y verificar pass 
+        //password_verify(pass a verificar, pass del user) como usarlo
         //pedir que el parametro email tengo @ obligatorio 
         //el resto anda 10 puntelis
+        $body = $this->getBody();
+        $valueUser=$this->userModel->getUser($body->email);
+       
+        $valueEmail = $this->is_valid_email($body->email);
         if(!empty($body)){
             if($valueUser == false){
-            $this->userModel->insertUser($body->email,$body->password,$body->nombre);
+                if($valueEmail==true){
+                $password = password_hash($body->password,PASSWORD_BCRYPT);
+                $this->userModel->insertUser($body->email,$password,$body->nombre);
+                }else{
+                    return $this->view->response("el email no es correcto",404);
+                }
             }else{
                 return $this->view->response("el usuario ya existe",404);
             }
@@ -325,38 +383,11 @@ class ApiController{
         return $this->view->response($body,200);
     }
 
-    function createUser(){
-        if(!empty($_POST['email'])&& !empty($_POST['password'])&&!empty($_POST['nombre_apellido'])){
-            $userEmail=$_POST['email'];
-            if(isset($userEmail) != $this->model->getUser($userEmail)){
-                $userPassword=password_hash($_POST['password'],PASSWORD_BCRYPT) ;
-                $userNombre=$_POST['nombre_apellido'];
-                $this->model->insertUser($userEmail,$userPassword,$userNombre);
-                $this->verifyLogin();
-
-            }
-        }
-    }
-    function verifyLogin(){
-        if (!empty($_POST['email']) && !empty($_POST['password'])) {
-            $email = $_POST['email'];
-            $password = $_POST['password'];
-     
-            // Obtengo el usuario de la base de datos
-            $user = $this->model->getUser($email);
-     
-            // Si el usuario existe y las contraseñas coinciden
-            if ($user  && password_verify($password, $user->password)) 
-                //inicion session  y le pido datos de la session para poder usarlos en el helper
-                session_start();
-                $_SESSION["email"] = $email;
-                $_SESSION["nombre_apellido"]=$user->nombre_apellido;
-                $_SESSION["id"]=$user->id;
-                $_SESSION["tipoUser"]=$user->tipoUser;
-               
-          
-        }
-    }
+    function is_valid_email($str){
+        $matches = null;
+        return (1 === preg_match('/^[A-z0-9\\._-]+@[A-z0-9][A-z0-9-]*(\\.[A-z0-9_-]+)*\\.([A-z]{2,6})$/', $str, $matches));
+      }
+    
 
 }
 

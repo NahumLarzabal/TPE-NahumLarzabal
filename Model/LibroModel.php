@@ -25,6 +25,17 @@ class LibroModel{
         $libros = $sentencia->fetchAll(PDO::FETCH_OBJ);
         return $libros;
     }  
+    function valueSort($sort=null){
+        $tabla="libros";
+        if($sort == "categoria"){
+            $tabla="categorias";
+        }
+        $sentencia = $this->db->prepare("SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE COLUMN_NAME = ? AND TABLE_NAME = '$tabla'");
+        $sentencia->execute(array($sort));
+        $columna = $sentencia->fetchAll(PDO::FETCH_OBJ);
+        return count($columna);
+    }
+   
     function getLibrosAll($sort=null,$order=null,$page=null,$limit=null){
        if(!empty($sort)&&!empty($order)&&!empty($page)&&!empty($limit)){
             $sentencia = $this->db->prepare( "SELECT libros.id, libros.autor, libros.nombre_libro, libros.precio, categorias.categoria, 
@@ -54,9 +65,9 @@ class LibroModel{
     }
    
 
-    function getLibroName($id){
-        $sentencia = $this->db->prepare( "SELECT id, nombre_libro FROM libros WHERE nombre_libro=?;");
-        $sentencia->execute([$id]);
+    function getLibroName($name){
+        $sentencia = $this->db->prepare( "SELECT id, nombre_libro FROM libros WHERE nombre_libro=?");
+        $sentencia->execute([$name]);
         $libro = $sentencia->fetch(PDO::FETCH_OBJ);
         return $libro;
     }
@@ -81,6 +92,11 @@ class LibroModel{
         $sentencia = $this->db->prepare("DELETE FROM libros WHERE libros.id = ?");
         $sentencia->execute(array($id));
     }
+    function deleteLibro($id){
+        $sentencia = $this->db->prepare("DELETE FROM libros WHERE libros.nombre_libro = ?");
+        $sentencia->execute(array($id));
+    }
+    
 
     function updateLibroFromDB($id,$autor,$nombre_libro, $descripcion, $precio, $genero, $imagen=null){
         $pathImg = null;

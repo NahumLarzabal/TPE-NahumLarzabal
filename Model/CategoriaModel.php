@@ -50,6 +50,10 @@ class CategoriaModel{
         $sentencia = $this->db->prepare("DELETE FROM categorias WHERE categorias.id_categoria = ?");
         $sentencia->execute(array($id));
     }
+    function deleteCategoria($id){
+        $sentencia = $this->db->prepare("DELETE FROM categorias WHERE categorias.categoria = ?");
+        $sentencia->execute(array($id));
+    }
 
     //funcion para contar ctos libros hay designados en cada categoria.
     function contadorCategoria($id){

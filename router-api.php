@@ -8,19 +8,18 @@ $router = new Router();
 
 $router->addRoute('libros','GET','ApiController','getLibros'); //ok
 $router->addRoute('libro/:ID','GET','ApiController','getLibro');//OK
-$router->addRoute('libro/:ID','DELETE','ApiController','getDeleteLibro');
+$router->addRoute('libro/:ID','DELETE','ApiController','deleteLibro');
 $router->addRoute('libro','POST','ApiController','insertLibro');//ok
 $router->addRoute('libro/:ID','PUT','ApiController','editLibro');
 $router->addRoute('categorias','GET','ApiController','getCategorias');//ok
 $router->addRoute('categoria/:ID','GET','ApiController','getCategoria');//ok
-$router->addRoute('categoria/:ID','DELETE','ApiController','getDeleteCategoria');
+$router->addRoute('categoria/:ID','DELETE','ApiController', 'deleteCategoria');
 $router->addRoute('categoria','POST','ApiController','insertCategoria');//ok
-$router->addRoute('categoria/:ID','PUT','ApiController','editCategoria');
 $router->addRoute('categoria/:ID','PUT','ApiController','editCategoria');
 $router->addRoute('usuarios','GET','ApiController','getUsers'); //ok
 $router->addRoute('usuario/:email','GET','ApiController','getUser');//ok
-$router->addRoute('usuario/:ID','DELETE','ApiController','getDeleteUser');
-$router->addRoute('usuario','POST','ApiController','insertUser');
+$router->addRoute('usuario/:ID','DELETE','ApiController','deleteUser');
+$router->addRoute('usuario','POST','ApiController','insertUser');//ok
 $router->addRoute('comentarios','GET','ApiController','getCommentsApi');//ok
 $router->addRoute('comentarios/libro/:ID','GET','ApiController','getCommentApi');//ok 
 $router->addRoute('comentarios/libro/:ID/','POST','ApiController','insertCommentFull');//ok

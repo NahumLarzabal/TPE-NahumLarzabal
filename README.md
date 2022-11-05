@@ -33,7 +33,7 @@ Explicaremos que hace cada ruta para que le sea mas facil usar en postman saber 
 ej: ` http://localhost/web2/TPE-NahumLarzabal/api/libros `
 Trae todos los Libros  existentes sin filtro alguno
 parametros que se pueden utilizar en sort:
- { "autor" "nombre_libro" "descripcion" "precio" "categoria"}
+ { "autor" "nombre_libro" "descripcion" "precio" "categoria" "id_categoria" "imagen"}
 
 1. 1. 
 ej: ` http://localhost/web2/TPE-NahumLarzabal/api/libros?orderby=asc `
@@ -100,26 +100,26 @@ ej: ` http://localhost/web2/TPE-NahumLarzabal/api/categoria/1 `
 Busca un genero por su ID
 
 3. `$router->addRoute('libros/:ID/comentarios','GET','ApiController','getComment')`
-ej: ` http://localhost/web2/TPE-NahumLarzabal/api/comentarios/libro/:ID `
+ej: ` http://localhost/web2/TPE-NahumLarzabal/api/comentarios/libro/3`
 Busca un libro por su ID y te trae todos los comentarios de ese libro
 
 3. 1. `$router->addRoute('libros/:ID/comentarios/orderby/:order','GET','ApiController','getComment')`
-ej: ` http://localhost/web2/TPE-NahumLarzabal/api/comentarios/libro/:ID?orderby=asc `
+ej: ` http://localhost/web2/TPE-NahumLarzabal/api/comentarios/libro/5?orderby=asc `
 Busca y ordena los comentarios en forma desendente o asendente de un libro en espesifico (ASC o asc, DESC o desc)
 
 3. 2. `$router->addRoute('libros/:ID/comentarios/orderby/:order/page/:hoja/limit/:tope','GET','ApiController','getCommentPag')`
-ej: ` http://localhost/web2/TPE-NahumLarzabal/api/comentarios/libro/:ID?orderby=desc&page=1&limit=5` 
+ej: ` http://localhost/web2/TPE-NahumLarzabal/api/comentarios/libro/8?orderby=desc&page=1&limit=5` 
 Busca y ordena los comentarios en forma desendente o asendente (ASC o asc, DESC o desc) de un libro en 
 especifico en una paginacion con un limite de contencion dentro de la pagina
 
 
 3. 3. `$router->addRoute('libros/:ID/comentarios/orderby/:order/puntaje/:puntaje','GET','ApiController','getCommentPuntaje')`
-ej: ` http://localhost/web2/TPE-NahumLarzabal/api/comentarios/libro/:ID?orderby=desc&page=1&limit=5&star=2 `
+ej: ` http://localhost/web2/TPE-NahumLarzabal/api/comentarios/libro/44?orderby=desc&page=1&limit=5&star=2 `
 Busca un libro especifico y te trae todos los comentarios en forma asendente o desendente (ASC o asc, DESC o desc) por la puntuacion que tengan los comentarios y de forma paginada
 en caso de no querer paginacion hay q borrar page y limit y en caso de no querer ordenarlas sacar orderby
 
-ej: ` http://localhost/web2/TPE-NahumLarzabal/api/comentarios/libro/:ID?orderby=desc&star=2 `
-ej: ` http://localhost/web2/TPE-NahumLarzabal/api/comentarios/libro/:ID?star=2 `
+ej: ` http://localhost/web2/TPE-NahumLarzabal/api/comentarios/libro/1?orderby=desc&star=2 `
+ej: ` http://localhost/web2/TPE-NahumLarzabal/api/comentarios/libro/4?star=2 `
 
 4. `$router->addRoute('usuario/:email','GET','ApiController','getUser')`
 ej: ` http://localhost/web2/TPE-NahumLarzabal/api/usuario/admin@gmail.com `
@@ -131,7 +131,7 @@ Busca al usuario por el Email con el que se registro ( el invitado tiene un mail
 (Los parametros ID son autoincrementables no se tiene que pasar)
 
 1. `$router->addRoute('libros','POST','ApiController','insertLibro')`
-ej: `http://localhost/web2/TPE-NahumLarzabal/api/libros`
+ej: `http://localhost/web2/TPE-NahumLarzabal/api/libro`
 Para insertar un nuevo libro usar un JSON de este formato
 {
         "autor": "nahum asc",
@@ -166,5 +166,39 @@ Para insertar un nuevo comentario en un libro en espesifico usar un JSON de este
 
 el id_libro tiene que ser el mismo que el del parametro enviado
 
-4. `$router->addRoute('usuarios','POST','ApiController','insertUser')`
+4. `$router->addRoute('usuario','POST','ApiController','insertUser')`
+ej: `http://localhost/web2/TPE-NahumLarzabal/api/usuario`
+Para insertar un nuevo usuario usar un JSON de este formato
+{
+        "email": "pepeargento@gmail.com",
+        "password":"123456",
+        "nombre": "kimberly" 
+}
+
+el password cuando se crea se hashea y en el proseso de crear un usuario se revisa que sea un correo lo que envie y si ese correo existe previamente
+
+## VERBO DELETE
+1. `$router->addRoute('libro/:ID','DELETE','ApiController','deleteLibro')`
 ej: ``
+
+2. `$router->addRoute('categoria/:ID','DELETE','ApiController','deleteCategoria')`
+ej: `http://localhost/web2/TPE-NahumLarzabal/api/categoria/papafirta` o `http://localhost/web2/TPE-NahumLarzabal/api/categoria/4`
+se puede eliminar tanto por nombre de categoria si se sabe o por el numero id del mismo
+
+3. `$router->addRoute('libros/:ID/comentarios/:comentarioID','DELETE','ApiController','deleteComment')`
+ej: ``
+
+4. `$router->addRoute('usuario/:ID','DELETE','ApiController','deleteUser')`
+ej: ``
+
+
+## VERBO PUT
+1. `$router->addRoute('libro/:ID','PUT','ApiController','editLibro')`
+ej: ``
+
+2. `$router->addRoute('categoria/:ID','PUT','ApiController','editCategoria')`
+ej: ``
+
+3. ``
+ej: ``
+
