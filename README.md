@@ -27,31 +27,67 @@ Una vez realizado los pasos anteriores hay que ir de nuevo a la paguina de inter
 ## Uso de Rooter
 Explicaremos que hace cada ruta para que le sea mas facil usar en postman saber que rutas escribir
 
-## Vervo GET (busqueda sin filtros)
+## Vervo GET 
 
 1. ` $router->addRoute('libros','GET','ApiController','getLibros') `
 ej: ` http://localhost/web2/TPE-NahumLarzabal/api/libros `
 Trae todos los Libros  existentes sin filtro alguno
+parametros que se pueden utilizar en sort:
+ { "autor" "nombre_libro" "descripcion" "precio" "categoria"}
+
+1. 1. 
+ej: ` http://localhost/web2/TPE-NahumLarzabal/api/libros?orderby=asc `
+Ordena los comentarios en forma desendente o asendente (ASC o asc, DESC o desc)
+
+1. 2. 
+ej: ` http://localhost/web2/TPE-NahumLarzabal/api/libros?sort=autor&orderby=asc `
+Ordena los comentarios en forma desendente o asendente (ASC o asc, DESC o desc) segun el mas nuevo al mas viejo o al reves
+
+1. 3. 
+ej: ` http://localhost/web2/TPE-NahumLarzabal/api/libros?sort=descripcion&orderby=asc&page=1&limit=5 `
+Se filta todos los comentarios de una forma paginada con un limite de items y  los comentarios en forma desendente o asendente (ASC o asc, DESC o desc) 
+segun el mas nuevo al mas viejo o al reves
+
 
 2. `$router->addRoute('categorias','GET','ApiController','getCategorias')` 
 ej: ` http://localhost/web2/TPE-NahumLarzabal/api/categorias `
 Trae todos los Generos existentes sin filtro alguno
 
-3. `$router->addRoute('comentarios','GET','ApiController','getComments')`
+2. 1. 
+ej: ` http://localhost/web2/TPE-NahumLarzabal/api/categorias?orderby=asc   `
+Ordena los comentarios en forma desendente o asendente (ASC o asc, DESC o desc) segun el mas nuevo al mas viejo o al reves
+
+2. 2. 
+ej: ` http://localhost/web2/TPE-NahumLarzabal/api/categorias?orderby=desc&page=1&limit=5  `
+Se filta todos los comentarios de una forma paginada con un limite de items y  los comentarios en forma desendente o asendente (ASC o asc, DESC o desc) 
+segun el mas nuevo al mas viejo o al reves
+
+3. `$router->addRoute('comentarios','GET','ApiController','getCommentsApi')`
 ej: ` http://localhost/web2/TPE-NahumLarzabal/api/comentarios `
 Trae todos los Comentarios existentes sin filtro alguno
 
-3. 1. `$router->addRoute('comentarios/page/:hoja/limit/:tope','GET','ApiController','getCommentsPag')` 
-ej: ` http://localhost/web2/TPE-NahumLarzabal/api/comentarios/page/2/limit/2` 
-Se filta todos los comentarios de forma paguinada con un limite de items
-
-3. 2. `$router->addRoute('comentarios/orderby/:order','GET','ApiController','getComments')`
-ej: ` http://localhost/web2/TPE-NahumLarzabal/api/comentarios/orderby/asc `
+3. 1. 
+ej: ` http://localhost/web2/TPE-NahumLarzabal/api/comentarios?orderby=asc `
 Ordena los comentarios en forma desendente o asendente (ASC o asc, DESC o desc) segun el mas nuevo al mas viejo o al reves
+
+3. 2. 
+ej: ` http://localhost/web2/TPE-NahumLarzabal/api/comentarios?orderby=desc&page=1&limit=5` 
+Se filta todos los comentarios de una forma paginada con un limite de items y  los comentarios en forma desendente o asendente (ASC o asc, DESC o desc) 
+segun el mas nuevo al mas viejo o al reves
 
 4. `$router->addRoute('usuarios','GET','ApiController','getUsers')` 
 ej: ` http://localhost/web2/TPE-NahumLarzabal/api/usuarios `
 Trae todos los Usuarios existentes sin filtro alguno
+
+4. 1. 
+ej: `  http://localhost/web2/TPE-NahumLarzabal/api/usuarios?orderby=asc `
+Ordena los comentarios en forma desendente o asendente (ASC o asc, DESC o desc) segun el mas nuevo al mas viejo o al reves
+
+4. 2. 
+ej: `  http://localhost/web2/TPE-NahumLarzabal/api/usuarios?orderby=desc&page=1&limit=5` 
+Se filta todos los comentarios de una forma paginada con un limite de items y  los comentarios en forma desendente o asendente (ASC o asc, DESC o desc) 
+segun el mas nuevo al mas viejo o al reves
+
 
 ## Vervo GET (busqueda por ID y en caso de user por Email registrado)
 
@@ -64,23 +100,26 @@ ej: ` http://localhost/web2/TPE-NahumLarzabal/api/categoria/1 `
 Busca un genero por su ID
 
 3. `$router->addRoute('libros/:ID/comentarios','GET','ApiController','getComment')`
-ej: ` http://localhost/web2/TPE-NahumLarzabal/api/libros/1/comentarios `
+ej: ` http://localhost/web2/TPE-NahumLarzabal/api/comentarios/libro/:ID `
 Busca un libro por su ID y te trae todos los comentarios de ese libro
 
 3. 1. `$router->addRoute('libros/:ID/comentarios/orderby/:order','GET','ApiController','getComment')`
-ej: ` http://localhost/web2/TPE-NahumLarzabal/api/libros/1/comentarios/orderby/asc `
-Busca y ordena los comentarios en forma desendente o asendente de un librro en espesifico (ASC o asc, DESC o desc)
+ej: ` http://localhost/web2/TPE-NahumLarzabal/api/comentarios/libro/:ID?orderby=asc `
+Busca y ordena los comentarios en forma desendente o asendente de un libro en espesifico (ASC o asc, DESC o desc)
 
 3. 2. `$router->addRoute('libros/:ID/comentarios/orderby/:order/page/:hoja/limit/:tope','GET','ApiController','getCommentPag')`
-ej: ` http://localhost/web2/TPE-NahumLarzabal/api/libros/1/comentarios/orderby/asc/page/1/limit/2 `
+ej: ` http://localhost/web2/TPE-NahumLarzabal/api/comentarios/libro/:ID?orderby=desc&page=1&limit=5` 
 Busca y ordena los comentarios en forma desendente o asendente (ASC o asc, DESC o desc) de un libro en 
-especifico en una paginacion con un limite de contencion dentro de la paguina
+especifico en una paginacion con un limite de contencion dentro de la pagina
 
 
 3. 3. `$router->addRoute('libros/:ID/comentarios/orderby/:order/puntaje/:puntaje','GET','ApiController','getCommentPuntaje')`
-ej: ` http://localhost/web2/TPE-NahumLarzabal/api/libros/1/comentarios/orderby/asc/puntaje/2 `
-Busca un libro especifico y te trae todos los comentarios en forma asendente o desendente (ASC o asc, DESC o desc) por la puntuacion que tengan los comentarios
+ej: ` http://localhost/web2/TPE-NahumLarzabal/api/comentarios/libro/:ID?orderby=desc&page=1&limit=5&star=2 `
+Busca un libro especifico y te trae todos los comentarios en forma asendente o desendente (ASC o asc, DESC o desc) por la puntuacion que tengan los comentarios y de forma paginada
+en caso de no querer paginacion hay q borrar page y limit y en caso de no querer ordenarlas sacar orderby
 
+ej: ` http://localhost/web2/TPE-NahumLarzabal/api/comentarios/libro/:ID?orderby=desc&star=2 `
+ej: ` http://localhost/web2/TPE-NahumLarzabal/api/comentarios/libro/:ID?star=2 `
 
 4. `$router->addRoute('usuario/:email','GET','ApiController','getUser')`
 ej: ` http://localhost/web2/TPE-NahumLarzabal/api/usuario/admin@gmail.com `
@@ -89,13 +128,32 @@ Busca al usuario por el Email con el que se registro ( el invitado tiene un mail
 
 
 ## Verevo POST
+(Los parametros ID son autoincrementables no se tiene que pasar)
+
 1. `$router->addRoute('libros','POST','ApiController','insertLibro')`
-ej: ``
+ej: `http://localhost/web2/TPE-NahumLarzabal/api/libros`
+Para insertar un nuevo libro usar un JSON de este formato
+{
+        "autor": "nahum asc",
+       "nombre_libro": "asda",
+       "descripcion": "asda",
+       "precio": 55,
+       "genero":"ciencia ficcion",
+       "imagen": null
+}
+la imagen se tiene que subir con esta ruta y el nombre del archivo asegurarse que este ahi guardada la imagen las barras tienen que estar /
+"imagen": "C:/xampp/htdocs/web2/TPE-NahumLarzabal/img/portadas/63239350b9de7.jpg"
 
 2. `$router->addRoute('categorias','POST','ApiController','insertCategoria')`
-ej: ``
+ej: `http://localhost/web2/TPE-NahumLarzabal/api/categoria`
+Para insertar una nueva categoria (genero de libro) usar un JSON de este formato
 
-3. `$router->addRoute('libros/:ID/comentarios','POST','ApiController','insertCommentX')`
+{
+        "categoria": "kimberly" 
+}
+
+
+3. `$router->addRoute('comentarios/libro/:ID/','POST','ApiController','insertCommentFull')')`
 ej: `http://localhost/web2/TPE-NahumLarzabal/api/libros/44/comentarios`
 Para insertar un nuevo comentario en un libro en espesifico usar un JSON de este formato
 {

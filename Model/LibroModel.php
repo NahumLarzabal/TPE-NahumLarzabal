@@ -25,9 +25,21 @@ class LibroModel{
         $libros = $sentencia->fetchAll(PDO::FETCH_OBJ);
         return $libros;
     }  
-    function getLibrosX(){
+    function getLibrosAll($sort=null,$order=null,$page=null,$limit=null){
+       if(!empty($sort)&&!empty($order)&&!empty($page)&&!empty($limit)){
+            $sentencia = $this->db->prepare( "SELECT libros.id, libros.autor, libros.nombre_libro, libros.precio, categorias.categoria, 
+            libros.id_categoria, libros.imagen FROM libros JOIN categorias ON libros.id_categoria = categorias.id_categoria ORDER BY $sort $order  LIMIT " .$page ." , ".$limit);
+        }else if(!empty($sort)&&!empty($order)){
+            $sentencia = $this->db->prepare( "SELECT libros.id, libros.autor, libros.nombre_libro, libros.precio, categorias.categoria, 
+            libros.id_categoria, libros.imagen FROM libros JOIN categorias ON libros.id_categoria = categorias.id_categoria ORDER BY $sort $order"); 
+         }else if(!empty($sort)){
+            //le mandamos sort ya que es el primer parametro q recibe
+            $sentencia = $this->db->prepare( "SELECT libros.id, libros.autor, libros.nombre_libro, libros.precio, categorias.categoria, 
+            libros.id_categoria, libros.imagen FROM libros JOIN categorias ON libros.id_categoria = categorias.id_categoria ORDER BY libros.id $sort"); 
+         }else{
         $sentencia = $this->db->prepare( "SELECT libros.id, libros.autor, libros.nombre_libro, libros.precio, categorias.categoria, 
-        libros.id_categoria, libros.imagen FROM libros JOIN categorias ON libros.id_categoria = categorias.id_categoria ");
+        libros.id_categoria, libros.imagen FROM libros JOIN categorias ON libros.id_categoria = categorias.id_categoria ORDER BY libros.id"); 
+       }  
         $sentencia->execute();
         $libros = $sentencia->fetchAll(PDO::FETCH_OBJ);
         return $libros;
@@ -40,6 +52,7 @@ class LibroModel{
         $libro = $sentencia->fetch(PDO::FETCH_OBJ);
         return $libro;
     }
+   
 
     function getLibroName($id){
         $sentencia = $this->db->prepare( "SELECT id, nombre_libro FROM libros WHERE nombre_libro=?;");

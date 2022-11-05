@@ -7,8 +7,15 @@ class CategoriaModel{
          $this->db = new PDO('mysql:host=localhost;'.'dbname=db_tpe;charset=utf8', 'root', '');
     }
 
-    function getGeneros(){
-        $sentencia = $this->db->prepare( "select * from categorias");
+    function getGeneros($order=null,$page=null,$limit=null){
+        if(!empty($order)&&!empty($page)&&!empty($limit)){
+            $sentencia = $this->db->prepare("SELECT * from categorias ORDER BY id_categoria ".$order ." LIMIT ".$page .",".$limit);
+        }else if(!empty($order)){
+            $sentencia = $this->db->prepare("SELECT * from categorias ORDER BY id_categoria ".$order); 
+        }else{
+            $sentencia = $this->db->prepare("SELECT * from categorias"); 
+        } 
+       /*  $sentencia = $this->db->prepare( "select * from categorias"); */
         $sentencia->execute();
         $categorias = $sentencia->fetchAll(PDO::FETCH_OBJ);
         return $categorias;
@@ -30,6 +37,13 @@ class CategoriaModel{
         $sentencia = $this->db->prepare("INSERT INTO categorias (categoria) VALUES (?)");
         $sentencia->execute(array($categoria));
         return $this->db->lastInsertId();
+    }
+
+    function valueCategory($cat){
+        $sentencia = $this->db->prepare("SELECT * from categorias WHERE categoria=?");
+        $sentencia->execute(array($cat));
+        $categoria = $sentencia->fetchAll(PDO::FETCH_OBJ);
+        return count($categoria);
     }
     
     function deleteCategoriaFromDB($id){

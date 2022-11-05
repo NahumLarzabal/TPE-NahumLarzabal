@@ -13,8 +13,16 @@ class userModel{
         return $query->fetch(PDO::FETCH_OBJ);
     }
    
-    function getUsers(){
-        $query = $this->db->prepare('SELECT * FROM users');
+    function getUsers($order=null,$page=null,$limit=null){
+        if(!empty($order)&&!empty($page)&&!empty($limit)){
+            $query = $this->db->prepare("SELECT * FROM users ORDER BY id ".$order ." LIMIT ".$page .",".$limit);
+        }else if(!empty($order)){
+            $query = $this->db->prepare("SELECT * FROM users ORDER BY id ".$order); 
+        }else{
+            $query = $this->db->prepare("SELECT * FROM users"); 
+        } 
+
+       // $query = $this->db->prepare('SELECT * FROM users');
         $query->execute();
         $users = $query->fetchAll(PDO::FETCH_OBJ);
         return $users;
