@@ -7,13 +7,17 @@ class LibroModel{
          $this->db = new PDO('mysql:host=localhost;'.'dbname=db_tpe;charset=utf8', 'root', '');
     }
 
-    function paginacion(){
+    function paginacion($limit=null){
         $sentencia = $this->db->prepare( "SELECT libros.id, libros.autor, libros.nombre_libro, libros.precio, categorias.categoria, 
         libros.id_categoria, libros.imagen FROM libros JOIN categorias ON libros.id_categoria = categorias.id_categoria");
         $sentencia->execute();
         // contar cuantos libros hay en la bd
         $total_libros = $sentencia->rowCount();
-        $paginas = $total_libros/libros_x_pagina;
+        if($limit!=null){
+            $paginas = $total_libros/$limit;
+        }else{
+            $paginas = $total_libros/libros_x_pagina;
+        }
         $paginas = ceil($paginas);
         return $paginas;
     }
@@ -36,25 +40,64 @@ class LibroModel{
         return count($columna);
     }
    
-    function getLibrosAll($sort=null,$order=null,$page=null,$limit=null){
-       if(!empty($sort)&&!empty($order)&&!empty($page)&&!empty($limit)){
-            $sentencia = $this->db->prepare( "SELECT libros.id, libros.autor, libros.nombre_libro, libros.precio, categorias.categoria, 
-            libros.id_categoria, libros.imagen FROM libros JOIN categorias ON libros.id_categoria = categorias.id_categoria ORDER BY $sort $order  LIMIT " .$page ." , ".$limit);
-        }else if(!empty($sort)&&!empty($order)){
-            $sentencia = $this->db->prepare( "SELECT libros.id, libros.autor, libros.nombre_libro, libros.precio, categorias.categoria, 
-            libros.id_categoria, libros.imagen FROM libros JOIN categorias ON libros.id_categoria = categorias.id_categoria ORDER BY $sort $order"); 
-         }else if(!empty($sort)){
-            //le mandamos sort ya que es el primer parametro q recibe
-            $sentencia = $this->db->prepare( "SELECT libros.id, libros.autor, libros.nombre_libro, libros.precio, categorias.categoria, 
-            libros.id_categoria, libros.imagen FROM libros JOIN categorias ON libros.id_categoria = categorias.id_categoria ORDER BY libros.id $sort"); 
-         }else{
-        $sentencia = $this->db->prepare( "SELECT libros.id, libros.autor, libros.nombre_libro, libros.precio, categorias.categoria, 
-        libros.id_categoria, libros.imagen FROM libros JOIN categorias ON libros.id_categoria = categorias.id_categoria ORDER BY libros.id"); 
-       }  
-        $sentencia->execute();
-        $libros = $sentencia->fetchAll(PDO::FETCH_OBJ);
+
+    function getLibrosAll($sort=null,$order=null,$page=null,$limit=null,$like=null){
+        //str_replace('_normal', '', $var)
+        $string = "WHERE {sort} LIKE '%{like}%' ORDER BY {sort2} {order} LIMIT {'page'} , {'limit'} ";
+       if($like == null){
+           $string = str_replace('LIKE','',$string);
+           $string = str_replace("'%{like}%'",'',$string);
+       }else{
+        $string = str_replace("'%{like}%'",'?',$string);
+       }
+       if($sort == null){
+           $string = str_replace('WHERE','',$string);
+           $string = str_replace('{sort}','',$string);
+        }else{
+            $string = str_replace('{sort}',$sort,$string);
+            //$string = str_replace('{sort2}',$sort,$string);
+        }
+        if($order == null ){
+            $string = str_replace('ORDER','',$string);
+            $string = str_replace('BY','',$string);
+            $string = str_replace('{order}','',$string);
+        }else if($sort !=null){
+            $string = str_replace('{sort2}',$sort,$string);
+            $string = str_replace('{order}',$order,$string);
+        }else{
+            $string = str_replace('{sort2}','id',$string);
+            $string = str_replace('{order}','asc',$string);
+        } 
+
+        if($page == null&& $page<0){
+            $string = str_replace('LIMIT','',$string);
+            $string = str_replace("{'page'}",'',$string);
+            $string = str_replace(",",'',$string);
+            $string = str_replace("{'limit'}",'',$string);
+        }else if($page>=0){
+            $string = str_replace("{'page'}",$page,$string);
+            $string = str_replace("{'limit'}",$limit,$string);
+        }
+
+        if($limit== null){
+            $string = str_replace('LIMIT','',$string);
+            $string = str_replace(",",'',$string);
+        }
+
+        var_dump($sentencia = $this->db->prepare($string));
+            
+            $sentencia = $this->db->prepare("SELECT libros.id, libros.autor, libros.nombre_libro, libros.precio, categorias.categoria,libros.id_categoria, libros.imagen FROM libros JOIN categorias
+            ON libros.id_categoria = categorias.id_categoria $string");
+             if($like == null){
+                $sentencia->execute();
+            }else{ 
+                $sentencia->execute(["%$like%"]);
+            }
+
+         $libros = $sentencia->fetchAll(PDO::FETCH_OBJ);
         return $libros;
-    }  
+
+    }
     
     function getLibro($id){
         $sentencia = $this->db->prepare( "SELECT libros.id, libros.autor, libros.nombre_libro, libros.descripcion, libros.precio, libros.imagen,
@@ -67,6 +110,12 @@ class LibroModel{
 
     function getLibroName($name){
         $sentencia = $this->db->prepare( "SELECT id, nombre_libro FROM libros WHERE nombre_libro=?");
+        $sentencia->execute([$name]);
+        $libro = $sentencia->fetch(PDO::FETCH_OBJ);
+        return $libro;
+    }
+    function getLibroAutor($name){
+        $sentencia = $this->db->prepare( "SELECT id, autor FROM libros WHERE autor=?");
         $sentencia->execute([$name]);
         $libro = $sentencia->fetch(PDO::FETCH_OBJ);
         return $libro;

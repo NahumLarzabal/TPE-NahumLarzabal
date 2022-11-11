@@ -3,7 +3,6 @@
 class AuthHelpers{
     // private $key;
     function __construct() {
-        // $this->key = "NAHUMyAGUSTIN";
     }
 
     function checkLogin(){

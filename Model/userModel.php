@@ -12,6 +12,11 @@ class userModel{
         $query->execute([$email]);
         return $query->fetch(PDO::FETCH_OBJ);
     }
+    function getUserID($id){
+        $query = $this->db->prepare('SELECT * FROM users WHERE id = ?');
+        $query->execute([$id]);
+        return $query->fetch(PDO::FETCH_OBJ);
+    }
    
     function getUsers($order=null,$page=null,$limit=null){
         if(!empty($order)&&!empty($page)&&!empty($limit)){
@@ -38,11 +43,20 @@ class userModel{
         $query = $this->db->prepare('DELETE FROM users WHERE users.email = ?');
         $query->execute(array($userEmail));
     }
+    function deleteUsuarioID($id){
+        $query = $this->db->prepare('DELETE FROM users WHERE users.id = ?');
+        $query->execute(array($id));
+    }
 
     // funcion administrador para editar usuario 
     function editarTipoUser($tipoUser){
         $sentencia = $this->db->prepare("UPDATE users SET tipoUser=?");
         $sentencia->execute($tipoUser);
+    }
+    
+    function editUserApi($email,$nombre_apellido,$password,$id){
+        $sentencia = $this->db->prepare("UPDATE `users` SET `email` = '$email', `nombre_apellido` = '$nombre_apellido', `password` = '$password' WHERE `users`.`id` = $id");
+        $sentencia->execute(array());
     }
     
     function editUser($nombre_apellido,$tipoUser,$email){

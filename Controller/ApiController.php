@@ -4,6 +4,8 @@ require_once "./View/ApiView.php";
 require_once "./Model/CategoriaModel.php";
 require_once "./Model/userModel.php";
 require_once "./Model/ComentariosModel.php";
+require_once "./helpers/apiHelper.php";
+
 
 class ApiController{
 
@@ -12,6 +14,7 @@ class ApiController{
     private $modelCategoria;
     private $userModel;
     private $CommentModel;
+    private $helper;
 
 
     function __construct(){
@@ -20,7 +23,10 @@ class ApiController{
         $this->modelCategoria= new CategoriaModel();
         $this->userModel = new userModel();
         $this->CommentModel = new ComentariosModel();
+        $this->helper = new ApiHelpers();
     }
+
+    
     /** Devuelve el body del request */
     private function getBody() {
         $bodyString = file_get_contents("php://input");
@@ -175,40 +181,165 @@ class ApiController{
 
         }
     }
+
+    function deleteCommentAPI($params=null){
+        $idComment = $params[':ID'];
+        $idComment2 = $params[':comentarioID'];
+        $comment = $this->CommentModel->getComentarioLibroDesc($idComment);
+        $comment2 = $this->CommentModel->getComentario($idComment2);
+
+        if(!empty($comment) && !empty($comment2)){
+           $this->CommentModel->deleteComment($idComment2);
+           return $this->view->response("El comentario de ID= $idComment2 con LibroId = $idComment fue borrada",204);
+        }else{
+            return $this->view->response("El comentario con ID = $idComment2 no fue borrada, puede que no exista en el libro de id= $idComment",404);
+        }
+    }
+
+
      /* ----------------------------- Libros ----------------------- */
 
-    function getLibros(){
-        if(!empty($_GET['sort']))
-        if($this->modelLibro->valueSort($_GET['sort'])==0){
-            return $this->view->response("la columna ".$_GET['sort']." no existe, las que existen son: autor, nombre_libro, descripcion, precio, categoria, id_categoria, imagen",404);
-        }
-        if(!empty($_GET['orderby'])&&!empty($_GET['page'])&& !empty($_GET['limit'])&&!empty($_GET['sort'])){
-            
-            $order = $_GET['orderby'];
-            $page =$_GET['page'];
-            $limit = $_GET['limit'];
-            $sort = $_GET['sort'];
-            $comment = $this->modelLibro->getLibrosAll($sort,$order,$page,$limit);
-           
-            
-        }else if(!empty($_GET['orderby'])&&!empty($_GET['sort'])){
-              if($_GET['orderby'] == "DESC"|| $_GET['orderby']  == "desc" || $_GET['orderby']  == "ASC"|| $_GET['orderby']  == "asc"){
-                  $comment = $this->modelLibro->getLibrosAll($_GET['sort'],$_GET['orderby']);    
-                }else{
-                 return $this->view->response("puede que el orderby este mal escrito, escribir DESC o desc, ASC o asc",404);
-                }
-        }else if(!empty($_GET['orderby'])){
-                if($_GET['orderby'] == "DESC"|| $_GET['orderby']  == "desc" || $_GET['orderby']  == "ASC"|| $_GET['orderby']  == "asc"){
-                 $comment = $this->modelLibro->getLibrosAll($_GET['orderby']);    
-                }else{
-                 return $this->view->response("puede que el orderby este mal escrito, escribir DESC o desc, ASC o asc",404);
-                }
-        }else{
-            $comment = $this->modelLibro->getLibrosAll();
-        }
-        return $this->view->response($comment,200); 
+    
 
+    function filtroPage(){
+        if(!empty($_GET['page']))
+        if(!empty($_GET['page']&&!empty($_GET['limit']))){
+           if($_GET['page']==0 && $_GET['page']){
+            return $this->view->response("la pagina no pede ser 0",403);
+           }
+        if(!empty($_GET['orderby'])){
+            if($_GET['orderby'] == "DESC"|| $_GET['orderby']  == "desc" || $_GET['orderby']  == "ASC"|| $_GET['orderby']  == "asc"){
+            }else{
+                return $this->view->response("puede que el orderby este mal escrito, escribir DESC o desc, ASC o asc",403);
+            }
+        }
+        if(!empty($_GET['sort'])){
+            $valueSort = $this->modelLibro->valueSort($_GET['sort']);
+            var_dump($valueSort);
+            if( $valueSort == 0){
+                return $this->view->response("puede que no exista el sort que busca",403);
+            }
+        }
+            $limit = $_GET['limit'];
+            //define("libros_x_pagina", $limit);
+            $paginas = $this->modelLibro->paginacion($_GET['limit']);
+            if($_GET['page']>$paginas || !$_GET['page']){
+               return $this->view->response("la pagina supera la cantidad que hay realmente, hay paginas: $paginas que muestra por cada una tantos item: '$limit'",403);
+            }else{
+
+                $iniciar = ($_GET['page']-1)*$limit;
+                define('iniciar',$iniciar);
+            }
+        }
+        if(!empty($_GET['sort']) && !empty($_GET['limit']) && !empty($_GET['filtro']) &&!empty($_GET['orderby']) && !empty($_GET['page'])){
+            $comment = $this->modelLibro->getLibrosAll($_GET['sort'],$_GET['orderby'],iniciar,$_GET['limit'],$_GET['filtro']);
+            if(!empty($comment)==0){
+                return $this->view->response("ya no hay mas para mostrar",403);
+            }
+        }else if(!empty($_GET['sort']) && !empty($_GET['limit']) && !empty($_GET['filtro'])&& !empty($_GET['page'])) {
+            $comment = $this->modelLibro->getLibrosAll($_GET['sort'],'asc',iniciar,$_GET['limit'],$_GET['filtro']);
+            if(!empty($comment)==0){
+                return $this->view->response("ya no hay mas para mostrar",403);
+            }
+        }else if(!empty($_GET['orderby']) && !empty($_GET['limit']) && !empty($_GET['filtro'])&& !empty($_GET['page'])){
+            $comment = $this->modelLibro->getLibrosAll('nombre_libro or autor',$_GET['orderby'],iniciar,$_GET['limit'],$_GET['filtro']);
+            if(!empty($comment)==0){
+                return $this->view->response("ya no hay mas para mostrar",403);
+            }
+        }else if(!empty($_GET['orderby']) && !empty($_GET['limit']) && !empty($_GET['sort'])&& !empty($_GET['page'])){
+            $comment = $this->modelLibro->getLibrosAll($_GET['sort'],$_GET['orderby'],iniciar,$_GET['limit'],null);
+            if(!empty($comment)==0){
+                return $this->view->response("ya no hay mas para mostrar",403);
+            }
+        }else if(!empty($_GET['limit']) && !empty($_GET['filtro'])&& !empty($_GET['page'])){
+            $comment = $this->modelLibro->getLibrosAll('nombre_libro or autor','asc',iniciar,$_GET['limit'],$_GET['filtro']);
+            if(!empty($comment)==0){
+                return $this->view->response("ya no hay mas para mostrar",403);
+            }
+        }else if(!empty($_GET['limit'])&& !empty($_GET['page'])){
+            if(!empty($_GET['orderby'])){
+                $comment = $this->modelLibro->getLibrosAll('id',$_GET['orderby'],iniciar,$_GET['limit'],null);
+            }else{
+                $comment = $this->modelLibro->getLibrosAll('id','asc',iniciar,$_GET['limit'],null);
+            }
+        }
+        if(!empty($comment))
+            return $this->view->response($comment,200);
     }
+  
+    function filtroOffPage(){
+        if(!empty($_GET['orderby'])){
+            if($_GET['orderby'] == "DESC"|| $_GET['orderby']  == "desc" || $_GET['orderby']  == "ASC"|| $_GET['orderby']  == "asc"){
+            }else{
+                return $this->view->response("puede que el orderby este mal escrito, escribir DESC o desc, ASC o asc",403);
+            }
+        }
+        if(!empty($_GET['sort'])){
+            $valueSort = $this->modelLibro->valueSort($_GET['sort']);
+            var_dump($valueSort);
+            if( $valueSort == 0){
+                return $this->view->response("puede que no exista el sort que busca",403);
+            }
+        }
+        if(!empty($_GET['sort']) && empty($_GET['limit']) && !empty($_GET['filtro']) &&!empty($_GET['orderby']) && empty($_GET['page'])){
+            $comment = $this->modelLibro->getLibrosAll($_GET['sort'],$_GET['orderby'],null,null,$_GET['filtro']);
+            }else if (!empty($_GET['sort']) &&!empty($_GET['orderby']) ){
+                $comment = $this->modelLibro->getLibrosAll($_GET['sort'],$_GET['orderby'],null,null,null);
+            }else if (!empty($_GET['sort']) &&!empty($_GET['filtro']) ){
+                $comment = $this->modelLibro->getLibrosAll($_GET['sort'],'asc',null,null,$_GET['filtro']);
+            }else if (!empty($_GET['filtro']) &&!empty($_GET['orderby']) ){
+                $comment = $this->modelLibro->getLibrosAll('nombre_libro or autor',$_GET['orderby'],null,null,$_GET['filtro']);
+            }else if (!empty($_GET['sort']) ){
+                $comment = $this->modelLibro->getLibrosAll($_GET['sort'],'asc',null,null,null);
+            }else if (!empty($_GET['orderby']) ){
+                $comment = $this->modelLibro->getLibrosAll('id',$_GET['orderby'],null,null,null);
+            }else if(!empty($_GET['filtro'])){
+                $comment = $this->modelLibro->getLibrosAll('nombre_libro or autor','asc',null,null,$_GET['filtro']);
+            }
+        if(!empty($comment)!=0){
+            return $this->view->response($comment,200);
+        }else{
+            return $this->view->response("No se encontro nada con {$_GET['filtro']}",404);
+        }
+    }
+
+    function getLibros(){
+       
+        if(!empty($_GET['sort']) && !empty($_GET['limit']) && !empty($_GET['filtro']) &&!empty($_GET['orderby']) && !empty($_GET['page'])){
+            $this->filtroPage();
+        }else if(!empty($_GET['sort']) && !empty($_GET['limit']) && !empty($_GET['filtro'])&& !empty($_GET['page'])) {
+            $this->filtroPage();
+        }else if(!empty($_GET['orderby']) && !empty($_GET['limit']) && !empty($_GET['filtro'])&& !empty($_GET['page'])){
+            $this->filtroPage();
+        }else if(!empty($_GET['orderby']) && !empty($_GET['limit']) && !empty($_GET['sort'])&& !empty($_GET['page'])){
+            $this->filtroPage();
+        }else if(!empty($_GET['limit']) && !empty($_GET['filtro'])&& !empty($_GET['page'])){
+            $this->filtroPage();
+        }else if(!empty($_GET['limit'])&& !empty($_GET['page'])){
+            if(!empty($_GET['orderby'])){
+                $this->filtroPage();
+            }else{
+                $this->filtroPage();
+            }
+        }else  if(!empty($_GET['sort']) && empty($_GET['limit']) && !empty($_GET['filtro']) &&!empty($_GET['orderby']) && empty($_GET['page'])){
+            $this->filtroOffPage();            
+        }else if (!empty($_GET['sort']) &&!empty($_GET['orderby']) ){
+            $this->filtroOffPage();            
+        }else if (!empty($_GET['sort']) &&!empty($_GET['filtro']) ){
+            $this->filtroOffPage();            
+        }else if (!empty($_GET['filtro']) &&!empty($_GET['orderby']) ){
+            $this->filtroOffPage();            
+        }else if (!empty($_GET['sort'])){
+            $this->filtroOffPage();            
+        }else if (!empty($_GET['orderby'])){
+             $this->filtroOffPage();            
+        }else if(!empty($_GET['filtro'])){
+            $this->filtroOffPage();            
+        }else{
+            return $this->view->response("No se encontro nada",404);
+        }        
+    }
+
 
     function getLibro($params){
        $id = $params[':ID'];
@@ -222,8 +353,8 @@ class ApiController{
  
     function insertLibro(){
         $body = $this->getBody();
-        $valueCategory = $this->modelCategoria->valueCategory($body->genero);
-        $valueName = $this->modelLibro->getLibroName($body->nombre_libro);
+        $valueCategory = $this->modelCategoria->valueCategory($body->genero); // devuelve 0 si no encuentra nada y 1 si encuentra algo
+        $valueName = $this->modelLibro->getLibroName($body->nombre_libro);// te devuelve true o false si la columna existe
         if(!empty($body)){
             if($valueName==false){
                 if($valueCategory > 0){
@@ -231,7 +362,6 @@ class ApiController{
                     $this->modelLibro->insertLibro($body->autor,$body->nombre_libro,$body->descripcion,$body->precio,2,$body->imagen);
                 }else{
                     return $this->view->response("la categoria no existe",404);
-
                 }
             }else{
                 return $this->view->response("el libro ya existe",404);
@@ -250,10 +380,10 @@ class ApiController{
         $valueID = $this->modelLibro->getLibro($id);
         if(!empty($valueID)){
             $this->modelLibro->deleteLibroFromDB($id);
-            return $this->view->response("eliminado $id",200);
+            return $this->view->response("eliminado $id",204);
         }else if($valueCategory!=0){
             $this->modelLibro->deleteLibro($id);
-            return $this->view->response("eliminado categoria: $id",200);
+            return $this->view->response("eliminado categoria: $id",204);
         }else{
             return $this->view->response("la categoria no se pudo eliminar porque no existe",404);
 
@@ -261,6 +391,25 @@ class ApiController{
 
 
     }
+    function editLibro($params){
+        $id = $params[':ID'];
+        $body = $this->getBody();
+        //le pregunto valueCategory que numero de id tiene ese nombre de categoria
+        // le pregunto a valueID que si el id existe
+        if(!empty($this->modelLibro->getLibro($id))){
+            if(!empty($this->modelCategoria->getGeneroName($body->genero))){
+                $valueCategory = $this->modelCategoria->getGeneroName($body->genero);
+                $valueIdCategory = $this->modelCategoria->getGeneroID($valueCategory);
+            }else{
+                return $this->view->response("La categoria no existe ",404);
+            }
+                $this->modelLibro->updateLibroFromDB($id,$body->autor,$body->nombre_libro,$body->descripcion,$body->precio,$valueCategory,$body->imagen);
+                return $this->view->response("Update el libro con id: $id",200);
+    }else{
+            return $this->view->response("El libro con ID: $id  no existe ",404);
+         }
+    }
+
 
     /* ------------------------- Categorias ---------------------- */
     
@@ -314,16 +463,35 @@ class ApiController{
         $valueID = $this->modelCategoria->getGenero($id);
         if(!empty($valueID)){
             $this->modelCategoria->deleteCategoriaFromDB($id);
-            return $this->view->response("eliminado $id",200);
+            return $this->view->response("eliminado $id",204);
         }else if($valueCategory!=0){
             $this->modelCategoria->deleteCategoria($id);
-            return $this->view->response("eliminado categoria: $id",200);
+            return $this->view->response("eliminado categoria: $id",204);
         }else{
             return $this->view->response("la categoria no se pudo eliminar porque no existe",404);
 
         }
+    }
 
-
+    function editCategoria($params){
+        $id = $params[':ID'];
+        $body = $this->getBody();
+        //le pregunto valueCategory que numero de id tiene ese nombre de categoria
+        // le pregunto a valueID que si el id existe
+        $valueCategory = $this->modelCategoria->getGeneroName($id);
+        $valueID = $this->modelCategoria->getGenero($id);
+         if(!empty($valueID)){
+             if($this->modelCategoria->getGeneroName($body->categoria)==false){
+                $this->modelCategoria->updateCategoriaFromDB($body->categoria,$id);
+                return $this->view->response("Update de la categoria:$id a $body->categoria",200);
+            }else{
+                return $this->view->response("El nombre a cambiar: $body->categoria es el mismo que ya tiene el $id",200);
+            }            
+        }else if($this->modelCategoria->getGenero($valueCategory) == true){
+            $this->modelCategoria->updateCategoriaFromDB($body->categoria,$valueCategory);
+            return $this->view->response("Update de categoria: $id a $body->categoria",200);
+        }
+        return $this->view->response("la categoria no se pudo cambiar porque no existe",404);
     }
 
     /* -------------------------- User ---------------------------- */
@@ -333,7 +501,7 @@ class ApiController{
             $order = $_GET['orderby'];
             $page =$_GET['page'];
             $limit = $_GET['limit'];
-            $user = $this->userModel->getUsers($order,$page,$limit);
+            $user = $this->userModel->getUsers($order,($page*$limit),$limit);
           }else if(!empty($_GET['orderby'])){
               if($_GET['orderby'] == "DESC"|| $_GET['orderby']  == "desc" || $_GET['orderby']  == "ASC"|| $_GET['orderby']  == "asc"){
                   $user = $this->userModel->getUsers($_GET['orderby']);    
@@ -351,10 +519,13 @@ class ApiController{
     function getUser($params){
         $email = $params[':email'];
         $user = $this->userModel->getUser($email);
-        if(isset($user)){
-            return $this->view->response($user,200);
+        if(!empty($user)){   
+           return $this->view->response($user,200);
+        }else if($email>0 && $this->userModel->getUserID($email) ){
+           $user = $this->userModel->getUserID($email);
+           return $this->view->response($user,200);
         }else{
-            return $this->view->response("no hay contenido",400);
+           return $this->view->response("no existe este usuario",404);
         }
     }
 
@@ -388,10 +559,147 @@ class ApiController{
         return (1 === preg_match('/^[A-z0-9\\._-]+@[A-z0-9][A-z0-9-]*(\\.[A-z0-9_-]+)*\\.([A-z]{2,6})$/', $str, $matches));
       }
     
+      function deleteUser($params){
+        $id=$params[':ID'];
+        $valueCategory = $this->userModel->getUser($id);
+        $valueID = $this->userModel->getUserID($id);
+        var_dump($valueCategory);
+        if(!empty($valueID)){
+           $this->userModel->deleteUsuarioID($id);
+            return $this->view->response("eliminado $id",200);
+        }else if($valueCategory==true){
+           $this->userModel->deleteUsuario($id);
+            return $this->view->response("eliminado usuario: $id",200);
+        }else{
+            return $this->view->response("el usuario no se pudo eliminar porque no existe",404);
+        }
+       
 
+      }
+
+    
+    function editUser($params){
+        $id = $params[':ID'];
+        $body = $this->getBody();
+        if (!empty($this->userModel->getUserID($id))){
+            $valueID = $this->userModel->getUserID($id);
+        }else{
+            return $this->view->response("Este usuario no existe ",404);
+        }
+        if(!empty($body->email) && $id!=1){
+            $valueUser=$this->userModel->getUser($body->email);
+            if($this->is_valid_email($body->email) == true ){
+                if(!empty($body->email)&&!empty($body->nombre)&&!empty($body->password)){
+                    $password = password_hash($body->password,PASSWORD_BCRYPT);
+                    if($valueUser == false){
+                            $this->userModel->editUserApi($body->email,$body->nombre,$password,$id);
+                            return $this->view->response("Se cambio existosamente el usuario ",200);
+                        }else if(!empty($body->email) == $valueID->email) {
+                            if($valueID->nombre != $body->nombre && !empty($id)!=1 ){
+                                $this->userModel->editUserApi($valueID->email,$body->nombre,$password,$id);
+                                return $this->view->response("Se cambio existosamente el nombre o el pass  ",200);
+                            }else if($valueID->password != $password && !empty($id)!=1){
+                                $this->userModel->editUserApi($valueID->email,$valueID->nombre,$password,$id);
+                                return $this->view->response("Se cambio existosamente el pass ",200);
+                            }
+                    }
+                }   
+            }
+        }else if(empty($body->nombre) != $valueID->nombre){
+            if($id != 1 && ($body->nombre == "Admin")==false && ($body->nombre == "admin") == false){
+                var_dump($body->nombre == "admin");
+                $this->userModel->editUserApi($valueID->email,$body->nombre,$valueID->password,$id);
+                return $this->view->response("Se cambio existosamente el nombre del usuario ",200);
+            }else{
+                return $this->view->response("Este usuario no puede cambiar al nombre Admin o admin ",404);
+            }
+        } else if(!empty($body->password)){
+            if($id != 1 && $body->password.ob_get_length()!=0){
+                $this->userModel->editUserApi($valueID->email,$valueID->nombre,$valueID->password,$id);
+                return $this->view->response("Se cambio existosamente el pass del usuario ",200);
+            }else{
+                return $this->view->response("Este usuario no puede cambiar la pass por espacios vacios ",404);
+
+            }
+        }
+        
+        return $this->view->response("Este usuario no se pudo cambiar ",404);
+    }
+
+   /*-------------------------------      Helper       ----------------------------------*/
+
+   function obtenerToken(){
+        $userpass=$this->helper->getBasic();
+        //$email = array("email"=>$userpass["email"]);
+        // Si el usuario existe y las contraseñas coinciden
+        if($this->userModel->getUser($userpass["email"])){
+            $email = array("email"=>$userpass["email"]);
+            $user = $this->userModel->getUser($email['email']); 
+            if (password_verify($userpass['password'], $user->password )) {
+                $token = $this->helper->creatToken($user);
+                $this->view->response(["token"=>$token],200);
+            }else{
+                return $this->view->response("Este password es incorrecta ",401);
+            }
+        }
+        return $this->view->response("no autorizado ",403);
+   }
+
+   function obtenerTokenPost(){
+    $userpass=$this->helper->getBasic();
+    if($this->userModel->getUser($userpass["email"])){
+        $this->view->response("ya existe este mail",401);
+        }else{
+            $newUser = array(
+                "id"=> "",
+                "name"=>$userpass['email'],
+                "email"=>$userpass['email'],
+                "password"=>$userpass['password']
+            );
+            $token = $this->helper->creatToken($newUser);
+            $this->view->response(["token"=>$token],200);
+        }
+   }
+
+   function obtenerUsuario($params=null){
+    $id = $params[':ID'];
+    $user = $this->helper->getUser();
+    if(!empty($user)){
+            if($id == $user->id){
+                $this->view->response($user,200);
+            }else{
+                $this->view->response("prohibido obtener info",403);
+            }
+        }else{
+            $this->view->response("no autorizado",401);
+        }
+    }
+
+    function crearUsuario(){
+        $user = $this->helper->getUser();
+       if($user){
+        if(!$this->userModel->getUser($user->name)){
+            $password = password_hash($user->password,PASSWORD_BCRYPT);
+            $create = $this->userModel->insertUser($user->name,$password,$user->name);
+            $this->view->response("creado el usuario con id: $create",200);
+        }else{
+            $this->view->response("prohibido obtener info",403);
+        }
+    }else{
+        $this->view->response("no autorizado el token no existe",401);
+    }
 }
 
+function editUsuario($params=null){
+    $id = $params[':ID'];
+    $user = $this->helper->getUser();
+    var_dump($user->id);
+    //$valueUser = $this->userModel->getUserID($user->id);
+    if(!empty($user)){
 
+    }else{
+        $this->view->response("no autorizado el token no existe",401);
+    }
+}
 
-
-
+}

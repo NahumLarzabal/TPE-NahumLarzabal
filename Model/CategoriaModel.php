@@ -27,10 +27,27 @@ class CategoriaModel{
         $categoria = $sentencia->fetchAll(PDO::FETCH_OBJ);
         return $categoria;
     }
+    function getGeneroName($name){
+        $sentencia = $this->db->prepare("select id_categoria from categorias WHERE categoria= '$name'");
+        $sentencia->execute();
+        $categoria = $sentencia->fetch(PDO::FETCH_OBJ);
+        if(!empty($categoria->id_categoria)){
+            return $categoria->id_categoria;
+        }
+    }
 
-    function updateCategoriaFromDB($id,$categoria){
+    function getGeneroID($id){
+        $sentencia = $this->db->prepare("select id_categoria from categorias WHERE id_categoria=$id");
+        $sentencia->execute();
+        $categoria = $sentencia->fetch(PDO::FETCH_OBJ);
+        if(!empty($categoria->id_categoria)){
+            return $categoria->id_categoria;
+        }
+    }
+
+    function updateCategoriaFromDB($categoria,$id){
         $sentencia = $this->db->prepare("UPDATE categorias SET categoria=? WHERE categorias.id_categoria =?");
-        $sentencia->execute(array($id,$categoria));
+        $sentencia->execute(array($categoria,$id));
     }
     
     function insertCategoria($categoria){
