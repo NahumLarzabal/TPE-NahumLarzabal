@@ -198,15 +198,33 @@ class ApiController{
 
 
      /* ----------------------------- Libros ----------------------- */
-
+    function stringSort($str){
+        $value = "";
+        if($str == "autor"){
+            $value = "autor";
+        }
+        if($str == "nombre"){
+            $value = "nombre_libro";
+        }
+        if($str == "nombre"){
+            $value = "nombre_libro";
+        }
+        if($str == "precio"){
+            $value = "precio";
+        }
+        if($str == "id"){
+            $value = "id";
+        }
+        if($str == "categoria"){
+            $value = "categoria";
+        }
+        return $value;
+    }
     
 
     function filtroPage(){
         if(!empty($_GET['page']))
-        if(!empty($_GET['page']&&!empty($_GET['limit']))){
-           if($_GET['page']==0 && $_GET['page']){
-            return $this->view->response("la pagina no pede ser 0",403);
-           }
+        if(!empty($_GET['page'] && !empty($_GET['limit']))){           
         if(!empty($_GET['orderby'])){
             if($_GET['orderby'] == "DESC"|| $_GET['orderby']  == "desc" || $_GET['orderby']  == "ASC"|| $_GET['orderby']  == "asc"){
             }else{
@@ -242,7 +260,7 @@ class ApiController{
                 return $this->view->response("ya no hay mas para mostrar",403);
             }
         }else if(!empty($_GET['orderby']) && !empty($_GET['limit']) && !empty($_GET['filtro'])&& !empty($_GET['page'])){
-            $comment = $this->modelLibro->getLibrosAll('nombre_libro or autor',$_GET['orderby'],iniciar,$_GET['limit'],$_GET['filtro']);
+            $comment = $this->modelLibro->getLibrosAll('nombre_libro',$_GET['orderby'],iniciar,$_GET['limit'],$_GET['filtro']);
             if(!empty($comment)==0){
                 return $this->view->response("ya no hay mas para mostrar",403);
             }
@@ -252,7 +270,7 @@ class ApiController{
                 return $this->view->response("ya no hay mas para mostrar",403);
             }
         }else if(!empty($_GET['limit']) && !empty($_GET['filtro'])&& !empty($_GET['page'])){
-            $comment = $this->modelLibro->getLibrosAll('nombre_libro or autor','asc',iniciar,$_GET['limit'],$_GET['filtro']);
+            $comment = $this->modelLibro->getLibrosAll('nombre_libro','asc',iniciar,$_GET['limit'],$_GET['filtro']);
             if(!empty($comment)==0){
                 return $this->view->response("ya no hay mas para mostrar",403);
             }
@@ -262,12 +280,12 @@ class ApiController{
             }else{
                 $comment = $this->modelLibro->getLibrosAll('id','asc',iniciar,$_GET['limit'],null);
             }
-        }
+    }
         if(!empty($comment))
             return $this->view->response($comment,200);
     }
   
-    function filtroOffPage(){
+function filtroOffPage(){
         if(!empty($_GET['orderby'])){
             if($_GET['orderby'] == "DESC"|| $_GET['orderby']  == "desc" || $_GET['orderby']  == "ASC"|| $_GET['orderby']  == "asc"){
             }else{
@@ -276,7 +294,6 @@ class ApiController{
         }
         if(!empty($_GET['sort'])){
             $valueSort = $this->modelLibro->valueSort($_GET['sort']);
-            var_dump($valueSort);
             if( $valueSort == 0){
                 return $this->view->response("puede que no exista el sort que busca",403);
             }
@@ -303,8 +320,9 @@ class ApiController{
         }
     }
 
-    function getLibros(){
-       
+function getLibros(){
+if(!empty($_GET['page'])){
+    if(($_GET['page']==0)!=true){
         if(!empty($_GET['sort']) && !empty($_GET['limit']) && !empty($_GET['filtro']) &&!empty($_GET['orderby']) && !empty($_GET['page'])){
             $this->filtroPage();
         }else if(!empty($_GET['sort']) && !empty($_GET['limit']) && !empty($_GET['filtro'])&& !empty($_GET['page'])) {
@@ -321,7 +339,10 @@ class ApiController{
             }else{
                 $this->filtroPage();
             }
-        }else  if(!empty($_GET['sort']) && empty($_GET['limit']) && !empty($_GET['filtro']) &&!empty($_GET['orderby']) && empty($_GET['page'])){
+        }
+    }
+    }else  if(empty($_GET['page'])){
+        if(!empty($_GET['sort']) && empty($_GET['limit']) && !empty($_GET['filtro']) &&!empty($_GET['orderby']) && empty($_GET['page'])){
             $this->filtroOffPage();            
         }else if (!empty($_GET['sort']) &&!empty($_GET['orderby']) ){
             $this->filtroOffPage();            
@@ -332,16 +353,21 @@ class ApiController{
         }else if (!empty($_GET['sort'])){
             $this->filtroOffPage();            
         }else if (!empty($_GET['orderby'])){
-             $this->filtroOffPage();            
+            $this->filtroOffPage();            
         }else if(!empty($_GET['filtro'])){
             $this->filtroOffPage();            
         }else{
             return $this->view->response("No se encontro nada",404);
         }        
+    }else{
+        return $this->view->response("page no puede ser 0",404);
+
     }
 
+}
 
-    function getLibro($params){
+
+function getLibro($params){
        $id = $params[':ID'];
         $libro = $this->modelLibro->getLibro($id);
         if(!empty($libro)){
@@ -351,7 +377,7 @@ class ApiController{
         }
     }
  
-    function insertLibro(){
+function insertLibro(){
         $body = $this->getBody();
         $valueCategory = $this->modelCategoria->valueCategory($body->genero); // devuelve 0 si no encuentra nada y 1 si encuentra algo
         $valueName = $this->modelLibro->getLibroName($body->nombre_libro);// te devuelve true o false si la columna existe
@@ -373,7 +399,7 @@ class ApiController{
         return $this->view->response($body,200); 
     }
 
-    function deleteLibro($params){
+function deleteLibro($params){
         $id = $params[':ID'];
         // el valueCategory devuelve 0 o 1
         $valueCategory = $this->modelLibro->getLibroName($id);
@@ -391,7 +417,8 @@ class ApiController{
 
 
     }
-    function editLibro($params){
+
+function editLibro($params){
         $id = $params[':ID'];
         $body = $this->getBody();
         //le pregunto valueCategory que numero de id tiene ese nombre de categoria
@@ -413,7 +440,7 @@ class ApiController{
 
     /* ------------------------- Categorias ---------------------- */
     
-    function getCategorias(){
+function getCategorias(){
         if(!empty($_GET['orderby'])&&!empty($_GET['page'])&& !empty($_GET['limit'])){
             $order = $_GET['orderby'];
             $page =$_GET['page'];
@@ -607,7 +634,6 @@ class ApiController{
             }
         }else if(empty($body->nombre) != $valueID->nombre){
             if($id != 1 && ($body->nombre == "Admin")==false && ($body->nombre == "admin") == false){
-                var_dump($body->nombre == "admin");
                 $this->userModel->editUserApi($valueID->email,$body->nombre,$valueID->password,$id);
                 return $this->view->response("Se cambio existosamente el nombre del usuario ",200);
             }else{
@@ -641,26 +667,13 @@ class ApiController{
             }else{
                 return $this->view->response("Este password es incorrecta ",401);
             }
-        }
-        return $this->view->response("no autorizado ",403);
-   }
-
-   function obtenerTokenPost(){
-    $userpass=$this->helper->getBasic();
-    if($this->userModel->getUser($userpass["email"])){
-        $this->view->response("ya existe este mail",401);
         }else{
-            $newUser = array(
-                "id"=> "",
-                "name"=>$userpass['email'],
-                "email"=>$userpass['email'],
-                "password"=>$userpass['password']
-            );
-            $token = $this->helper->creatToken($newUser);
-            $this->view->response(["token"=>$token],200);
+
+            return $this->view->response("no autorizado ",403);
         }
    }
 
+   
    function obtenerUsuario($params=null){
     $id = $params[':ID'];
     $user = $this->helper->getUser();
@@ -675,31 +688,76 @@ class ApiController{
         }
     }
 
-    function crearUsuario(){
-        $user = $this->helper->getUser();
-       if($user){
-        if(!$this->userModel->getUser($user->name)){
-            $password = password_hash($user->password,PASSWORD_BCRYPT);
-            $create = $this->userModel->insertUser($user->name,$password,$user->name);
+    function crearUsuario(){     
+        $user = $this->helper->getBasic();
+        if($this->userModel->getUser($user["email"])){
+            $this->view->response("ya existe este mail",401);
+        }else{         
+            $password = password_hash($user["password"],PASSWORD_BCRYPT);
+            $create = $this->userModel->insertUser($user['email'],$password,$user['email']);
+            $token = $this->helper->creatToken($user,$user['email']);
             $this->view->response("creado el usuario con id: $create",200);
-        }else{
-            $this->view->response("prohibido obtener info",403);
+            $this->view->response(["token"=>$token],200);
         }
-    }else{
-        $this->view->response("no autorizado el token no existe",401);
     }
-}
 
 function editUsuario($params=null){
     $id = $params[':ID'];
+    $body = $this->getBody();
     $user = $this->helper->getUser();
-    var_dump($user->id);
-    //$valueUser = $this->userModel->getUserID($user->id);
-    if(!empty($user)){
-
+    $valueUser = $this->userModel->getUserID($id);
+    if($user == null){
+       return $this->view->response("no autorizado el token no existe",404);
+    }
+    if(!empty($body->password)){
+        if(strlen($body->password)>=5){
+            $password = password_hash($body->password,PASSWORD_BCRYPT);
+            $password = password_hash($body->password,PASSWORD_BCRYPT);
+        }else{
+           return $this->view->response( "La contraseña tiene que ser mayor o igual a 5 caracteres",403);
+        }
+    }
+    if(!empty($body->email)){
+        if($this->is_valid_email($body->email)==true){
+        if(!empty($user->email == $valueUser->email && $user->email != "admin@gmail.com" )){
+                if(!$this->userModel->getUser($body->email) && !empty($body->password) && !empty($body->nombre_apellido)){
+                    if($body->email != "admin@gmail.com"){
+                        $this->userModel->editUserApi($body->email,$body->nombre_apellido,$password,$id);
+                        $this->view->response( "El actualizaron los datos",200);
+                    }
+                }else if (!$this->userModel->getUser($body->email) && !empty($body->nombre_apellido) ){
+                    $this->userModel->editUserApi($body->email,$body->nombre_apellido,$valueUser->password,$id);
+                    $this->view->response("se actualizo el mail y el nombre del usuario",200);
+                }else if(!empty(!$this->userModel->getUser($body->email)) && !empty($body->password)){
+                    $this->userModel->editUserApi($body->email,$valueUser->nombre_apellido,$password,$id);
+                    $this->view->response("se actualizo el password y el nombre del email",200);
+                }else if(!$this->userModel->getUser($body->email)) {
+                    $this->userModel->editUserApi($body->email,$valueUser->nombre_apellido,$valueUser->password,$id);
+                    $this->view->response("se actualizo el mail del usuario",200);
+                }else{
+                    if($body->email == "admin@gmail.com"){
+                        $this->view->response("Este mail no puede ser utilizado",401);
+                    }else{
+                        $this->view->response("Ya existe este mail",401);
+                    }
+                }
+            }
+        }else{
+            $this->view->response("el mail no es valido",401);
+        }
+    }else if(!empty($body->nombre_apellido) && !empty($body->password)) {
+        $this->userModel->editUserApi($valueUser->email,$body->nombre_apellido,$password,$id);
+        $this->view->response("se actualizo el password y el nombre del usuario",200);
+    }else if(!empty($body->nombre_apellido)) {
+        $this->userModel->editUserApi($valueUser->email,$body->nombre_apellido,$valueUser->password,$id);
+        $this->view->response("se actualizo el nombre del usuario",200);
+    }else if(!empty($body->password)){
+        $this->userModel->editUserApi($valueUser->email,$valueUser->nombre_apellido,$password,$id);
+        $this->view->response("se actualizo el password del usuario",200);
     }else{
-        $this->view->response("no autorizado el token no existe",401);
+        $this->view->response("no autorizado el token no existe",404);
     }
 }
+
 
 }

@@ -12,8 +12,8 @@ class ApiView{
             200 => "OK",
             201 => "Created",
             204 => "Delete",
-            404 => "Unautorized",
-            403=>"Forbidden",
+            401 => "Unautorized",
+            403=> "Forbidden",
             404 => "Not found",
             500 => "Internal Server Error",
             501 => "Internal Error in Libros web"

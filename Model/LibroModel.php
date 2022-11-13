@@ -61,13 +61,17 @@ class LibroModel{
             $string = str_replace('ORDER','',$string);
             $string = str_replace('BY','',$string);
             $string = str_replace('{order}','',$string);
-        }else if($sort !=null){
+        }else if($sort !=null && $sort != "nombre_libro or autor"){
             $string = str_replace('{sort2}',$sort,$string);
             $string = str_replace('{order}',$order,$string);
-        }else{
+        }else if($order !=null ){
             $string = str_replace('{sort2}','id',$string);
+            $string = str_replace('{order}',$order,$string);
+        }else{
+            $string = str_replace('{sort2}','"id"',$string);
             $string = str_replace('{order}','asc',$string);
-        } 
+
+        }
 
         if($page == null&& $page<0){
             $string = str_replace('LIMIT','',$string);
@@ -86,8 +90,8 @@ class LibroModel{
 
         var_dump($sentencia = $this->db->prepare($string));
             
-            $sentencia = $this->db->prepare("SELECT libros.id, libros.autor, libros.nombre_libro, libros.precio, categorias.categoria,libros.id_categoria, libros.imagen FROM libros JOIN categorias
-            ON libros.id_categoria = categorias.id_categoria $string");
+            $sentencia = $this->db->prepare("SELECT libros.id, libros.autor, libros.nombre_libro, libros.precio, categorias.categoria,libros.id_categoria, libros.imagen FROM 
+            libros JOIN categorias ON libros.id_categoria = categorias.id_categoria $string");
              if($like == null){
                 $sentencia->execute();
             }else{ 

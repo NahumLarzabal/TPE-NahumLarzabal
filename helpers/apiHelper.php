@@ -39,21 +39,19 @@ class ApiHelpers{
     }
 
 
-    function creatToken($user){
+    function creatToken($user,$name=null){
         $header = array(
             "type"=>'JWT',
             "alg"=>'HS256'
         );
-        if($user['id'] != ""){
+        if($name == null){
             $payload = array(
-                "id"=>$user['id'],
-                "email"=>$user['email'],
-                "password"=>$user['password']
+                "email"=>$user->email,
+                "password"=>$user->password
             );
         }else{
             $payload = array(
-                "id"=>$user['id'],
-                'name'=>$user['email'],
+                'name'=>$name,
                 "email"=>$user['email'],
                 "password"=>$user['password']
             );

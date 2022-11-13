@@ -22,10 +22,8 @@ $router->addRoute('usuario/:ID','DELETE','ApiController','deleteUser');//ok
 $router->addRoute('usuario','POST','ApiController','insertUser');//ok
 $router->addRoute('usuario/:ID','PUT','ApiController','editUser');//ok pasar en readme
 $router->addRoute('token','GET','ApiController','obtenerToken');
-$router->addRoute('token','POST','ApiController','obtenerTokenPost');
 $router->addRoute('token/usuario/:ID','GET','ApiController','obtenerUsuario');
 $router->addRoute('token/usuario','POST','ApiController','crearUsuario');
-$router->addRoute('token','PUT','ApiController','obtenerTokenPut');
 $router->addRoute('token/usuario/:ID','PUT','ApiController','editUsuario');
 $router->addRoute('comentarios','GET','ApiController','getCommentsApi');//ok
 $router->addRoute('comentarios/libro/:ID','GET','ApiController','getCommentApi');//ok 
