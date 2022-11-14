@@ -1,7 +1,7 @@
 # Brewery
 
 [**->Este proyecto se puede ver aqui<-**](https://github.com/NahumLarzabal/TPE-NahumLarzabal)
-[**→Clickee aquí para acceder a este proyecto.←**](https://github.com/Rayvennu08/tpe2-web)
+
 ## Development server 📄
 
 Para correr este servidor de motor MVC se necesita intalar un par de cosas:
@@ -10,7 +10,7 @@ Para correr este servidor de motor MVC se necesita intalar un par de cosas:
 .Vue.js
 .Xampp (para poder correr la base de datos (MySQL) y levantar el servidor(Apache))
 
-Una ves instalado Xampp hay que ir a la carpeta donde lo alla instalado por ej:C:\xampp\htdocs\web2\TPE
+Una ves instalado Xampp hay que ir a la carpeta donde lo alla instalado por **ej: C:\xampp\htdocs\web2\TPE**
 en esta carpeta haremos la copia del repositorio para poder levantar el servidor luego.
 
 Luego hay que abrir el navegador y poner:
@@ -27,7 +27,7 @@ Una vez realizado los pasos anteriores hay que ir de nuevo a la paguina de inter
 ## Uso de Rooter 📄
 Explicaremos que hace cada ruta para que le sea mas facil usar en postman y saber que rutas escribir
 
-# El Recurso de libros  📚
+# El Recurso de libros  📚 :books:
 
 
 1. 
