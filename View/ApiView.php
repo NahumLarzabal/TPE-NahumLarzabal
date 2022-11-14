@@ -12,6 +12,7 @@ class ApiView{
             200 => "OK",
             201 => "Created",
             204 => "Delete",
+            400 =>"Bad Request",
             401 => "Unautorized",
             403=> "Forbidden",
             404 => "Not found",

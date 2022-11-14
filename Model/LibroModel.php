@@ -53,6 +53,12 @@ class LibroModel{
        if($sort == null){
            $string = str_replace('WHERE','',$string);
            $string = str_replace('{sort}','',$string);
+        }else if($sort!=null && $like==null && $page==null){
+            $string = str_replace('WHERE','',$string);
+           $string = str_replace('{sort}','',$string);
+            $string = str_replace('{sort2}',$sort,$string);
+        }else if($sort != null && $order == null){
+            $string = str_replace('{sort2}',$sort,$string);
         }else{
             $string = str_replace('{sort}',$sort,$string);
             //$string = str_replace('{sort2}',$sort,$string);
@@ -61,7 +67,7 @@ class LibroModel{
             $string = str_replace('ORDER','',$string);
             $string = str_replace('BY','',$string);
             $string = str_replace('{order}','',$string);
-        }else if($sort !=null && $sort != "nombre_libro or autor"){
+        }else if($order !=null && $sort !=null && $sort != "nombre_libro or autor"){
             $string = str_replace('{sort2}',$sort,$string);
             $string = str_replace('{order}',$order,$string);
         }else if($order !=null ){
