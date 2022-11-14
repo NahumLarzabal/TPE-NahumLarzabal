@@ -1,8 +1,8 @@
 # Brewery
 
-Este proyecto se puede ver en (https://github.com/NahumLarzabal/TPE-NahumLarzabal) version BETA.
+[**->Este proyecto se puede ver aqui<-**] (https://github.com/NahumLarzabal/TPE-NahumLarzabal)
 
-## Development server
+## Development server 📄
 
 Para correr este servidor de motor MVC se necesita intalar un par de cosas:
 
@@ -24,16 +24,17 @@ Una vez realizado los pasos anteriores hay que ir de nuevo a la paguina de inter
 
 
 <!-- Documentar segun las tablas, Usuer, Libros, Categorias, Comentarios -->
-## Uso de Rooter
-Explicaremos que hace cada ruta para que le sea mas facil usar en postman saber que rutas escribir
+## Uso de Rooter 📄
+Explicaremos que hace cada ruta para que le sea mas facil usar en postman y saber que rutas escribir
 
-## Verbo GET 
+# El Recurso de libros  📚
+
 
 1. 
 ej: ` http://localhost/web2/TPE-NahumLarzabal/api/libros `
 Trae todos los Libros  existentes sin filtro alguno
 parametros que se pueden utilizar en sort:
- { "autor" "nombre_libro" "descripcion" "precio" "categoria" "id_categoria" "imagen"}
+```{ "autor" "nombre_libro" "descripcion" "precio" "categoria" "id_categoria" "imagen"}````
 
 1. 1. 
 ej: ` http://localhost/web2/TPE-NahumLarzabal/api/libros?orderby=asc `
@@ -48,6 +49,41 @@ ej: ` http://localhost/web2/TPE-NahumLarzabal/api/libros?sort=descripcion&orderb
 Se filta todos los comentarios de una forma paginada con un limite de items y  los comentarios en forma desendente o asendente (ASC o asc, DESC o desc) 
 segu
 
+1. 
+ej: `http://localhost/web2/TPE-NahumLarzabal/api/libro/1`
+Busca un libro por su ID
+
+1. 
+ej: `http://localhost/web2/TPE-NahumLarzabal/api/libro`
+Para insertar un nuevo libro usar un JSON de este formato
+'''{
+        "autor": "nahum asc",
+       "nombre_libro": "asda",
+       "descripcion": "asda",
+       "precio": 55,
+       "genero":"ciencia ficcion",
+       "imagen": null
+}'''
+la imagen se tiene que subir con esta ruta y el nombre del archivo asegurarse que este ahi guardada la imagen las barras tienen que estar /
+"imagen": "C:/xampp/htdocs/web2/TPE-NahumLarzabal/img/portadas/63239350b9de7.jpg"
+
+1. 
+ej: `http://localhost/web2/TPE-NahumLarzabal/api/libro/5` o `http://localhost/web2/TPE-NahumLarzabal/api/libro/PEron`
+se puede eliminar tanto por nombre de nombre_libro si se sabe o por el numero id del mismo
+1. 
+ej: `http://localhost/web2/TPE-NahumLarzabal/api/libro/1`
+se busca el libro por el id y el campo de genero tiene que ser con nombre, de ahi revisa si existe el mismo para updatear el libro
+{
+        "autor": "nahum asc",
+       "nombre_libro": "asda",
+       "descripcion": "asda",
+       "precio": 55,
+       "genero":"Ciencia Ficcion",
+       "imagen": null
+}
+
+
+# El Recurso de Categorias  📚
 
 2.  
 ej: ` http://localhost/web2/TPE-NahumLarzabal/api/categorias `
@@ -62,6 +98,33 @@ ej: ` http://localhost/web2/TPE-NahumLarzabal/api/categorias?orderby=desc&page=1
 Se filta todos los comentarios de una forma paginada con un limite de items y  los comentarios en forma desendente o asendente (ASC o asc, DESC o desc) 
 segun el mas nuevo al mas viejo o al reves
 
+2. 
+ej: ` http://localhost/web2/TPE-NahumLarzabal/api/categoria/1 `
+Busca un genero por su ID
+
+2. 
+ej: `http://localhost/web2/TPE-NahumLarzabal/api/categoria`
+Para insertar una nueva categoria (genero de libro) usar un JSON de este formato
+
+{
+        "categoria": "kimberly" 
+}
+
+2. 
+ej: `http://localhost/web2/TPE-NahumLarzabal/api/categoria/papafirta` o `http://localhost/web2/TPE-NahumLarzabal/api/categoria/4`
+se puede eliminar tanto por nombre de categoria si se sabe o por el numero id del mismo
+
+2. 
+ej: `http://localhost/web2/TPE-NahumLarzabal/api/categoria/1` o `http://localhost/web2/TPE-NahumLarzabal/api/categoria/Novela`
+hay que enviar un json con estos parametros, ademas la url distinge el parametro id con el nobre de la categoria por si el usuario no sabe el id de la categoria
+{
+        "categoria": "Novela"
+}
+
+
+
+
+# El Recurso de Comentarios📚
 3. 
 ej: ` http://localhost/web2/TPE-NahumLarzabal/api/comentarios `
 Trae todos los Comentarios existentes sin filtro alguno
@@ -75,29 +138,6 @@ ej: ` http://localhost/web2/TPE-NahumLarzabal/api/comentarios?orderby=desc&page=
 Se filta todos los comentarios de una forma paginada con un limite de items y  los comentarios en forma desendente o asendente (ASC o asc, DESC o desc) 
 segun el mas nuevo al mas viejo o al reves
 
-4. 
-ej: ` http://localhost/web2/TPE-NahumLarzabal/api/usuarios `
-Trae todos los Usuarios existentes sin filtro alguno
-
-4. 1. 
-ej: `  http://localhost/web2/TPE-NahumLarzabal/api/usuarios?orderby=asc `
-Ordena los comentarios en forma desendente o asendente (ASC o asc, DESC o desc) segun el mas nuevo al mas viejo o al reves
-
-4. 2. 
-ej: `  http://localhost/web2/TPE-NahumLarzabal/api/usuarios?orderby=desc&page=1&limit=5` 
-Se filta todos los comentarios de una forma paginada con un limite de items y  los comentarios en forma desendente o asendente (ASC o asc, DESC o desc) 
-segun el mas nuevo al mas viejo o al reves
-
-
-## Verbo GET (busqueda por ID y en caso de user por Email registrado)
-
-1. 
-ej: `http://localhost/web2/TPE-NahumLarzabal/api/libro/1`
-Busca un libro por su ID
-
-2. 
-ej: ` http://localhost/web2/TPE-NahumLarzabal/api/categoria/1 `
-Busca un genero por su ID
 
 3. 
 ej: ` http://localhost/web2/TPE-NahumLarzabal/api/comentarios/libro/3`
@@ -121,38 +161,6 @@ en caso de no querer paginacion hay q borrar page y limit y en caso de no querer
 ej: ` http://localhost/web2/TPE-NahumLarzabal/api/comentarios/libro/1?orderby=desc&star=2 `
 ej: ` http://localhost/web2/TPE-NahumLarzabal/api/comentarios/libro/4?star=2 `
 
-4. 
-ej: ` http://localhost/web2/TPE-NahumLarzabal/api/usuario/admin@gmail.com `
-Busca al usuario por el Email con el que se registro ( el invitado tiene un mail predificido invitado@gmail.com)
-
-
-
-## Verebo POST
-(Los parametros ID son autoincrementables no se tiene que pasar)
-
-1. 
-ej: `http://localhost/web2/TPE-NahumLarzabal/api/libro`
-Para insertar un nuevo libro usar un JSON de este formato
-{
-        "autor": "nahum asc",
-       "nombre_libro": "asda",
-       "descripcion": "asda",
-       "precio": 55,
-       "genero":"ciencia ficcion",
-       "imagen": null
-}
-la imagen se tiene que subir con esta ruta y el nombre del archivo asegurarse que este ahi guardada la imagen las barras tienen que estar /
-"imagen": "C:/xampp/htdocs/web2/TPE-NahumLarzabal/img/portadas/63239350b9de7.jpg"
-
-2. 
-ej: `http://localhost/web2/TPE-NahumLarzabal/api/categoria`
-Para insertar una nueva categoria (genero de libro) usar un JSON de este formato
-
-{
-        "categoria": "kimberly" 
-}
-
-
 3. 
 ej: `http://localhost/web2/TPE-NahumLarzabal/api/libros/44/comentarios`
 Para insertar un nuevo comentario en un libro en espesifico usar un JSON de este formato
@@ -166,6 +174,31 @@ Para insertar un nuevo comentario en un libro en espesifico usar un JSON de este
 
 el id_libro tiene que ser el mismo que el del parametro enviado
 
+3. 
+ej: `http://localhost/web2/TPE-NahumLarzabal/api/comentarios/119/libro/1`
+para eliminar un comentario de un libro hay que saber el id del libro y el id del comentario
+
+
+# El Recurso de Usuarios  📚
+4. 
+ej: ` http://localhost/web2/TPE-NahumLarzabal/api/usuarios `
+Trae todos los Usuarios existentes sin filtro alguno
+
+4. 1. 
+ej: `  http://localhost/web2/TPE-NahumLarzabal/api/usuarios?orderby=asc `
+Ordena los comentarios en forma desendente o asendente (ASC o asc, DESC o desc) segun el mas nuevo al mas viejo o al reves
+
+4. 2. 
+ej: `  http://localhost/web2/TPE-NahumLarzabal/api/usuarios?orderby=desc&page=1&limit=5` 
+Se filta todos los comentarios de una forma paginada con un limite de items y  los comentarios en forma desendente o asendente (ASC o asc, DESC o desc) 
+segun el mas nuevo al mas viejo o al reves
+
+4. 
+ej: ` http://localhost/web2/TPE-NahumLarzabal/api/usuario/admin@gmail.com `
+Busca al usuario por el Email con el que se registro ( el invitado tiene un mail predificido invitado@gmail.com)
+
+
+
 4. 
 ej: `http://localhost/web2/TPE-NahumLarzabal/api/usuario`
 Para insertar un nuevo usuario usar un JSON de este formato
@@ -177,44 +210,9 @@ Para insertar un nuevo usuario usar un JSON de este formato
 
 el password cuando se crea se hashea y en el proseso de crear un usuario se revisa que sea un correo lo que envie y si ese correo existe previamente
 
-## VERBO DELETE
-1. 
-ej: `http://localhost/web2/TPE-NahumLarzabal/api/libro/5` o `http://localhost/web2/TPE-NahumLarzabal/api/libro/PEron`
-se puede eliminar tanto por nombre de nombre_libro si se sabe o por el numero id del mismo
-
-2. 
-ej: `http://localhost/web2/TPE-NahumLarzabal/api/categoria/papafirta` o `http://localhost/web2/TPE-NahumLarzabal/api/categoria/4`
-se puede eliminar tanto por nombre de categoria si se sabe o por el numero id del mismo
-
-3. 
-ej: `http://localhost/web2/TPE-NahumLarzabal/api/comentarios/119/libro/1`
-para eliminar un comentario de un libro hay que saber el id del libro y el id del comentario
-
 4. 
 ej: `http://localhost/web2/TPE-NahumLarzabal/api/usuario/17` o `http://localhost/web2/TPE-NahumLarzabal/api/usuario/pepepe@gmail.com`
 se puede eliminar tanto por email del usuario si se sabe o por el numero id del mismo
-
-
-## VERBO PUT
-1. 
-ej: `http://localhost/web2/TPE-NahumLarzabal/api/libro/1`
-se busca el libro por el id y el campo de genero tiene que ser con nombre, de ahi revisa si existe el mismo para updatear el libro
-{
-        "autor": "nahum asc",
-       "nombre_libro": "asda",
-       "descripcion": "asda",
-       "precio": 55,
-       "genero":"Ciencia Ficcion",
-       "imagen": null
-}
-
-
-2. 
-ej: `http://localhost/web2/TPE-NahumLarzabal/api/categoria/1` o `http://localhost/web2/TPE-NahumLarzabal/api/categoria/Novela`
-hay que enviar un json con estos parametros, ademas la url distinge el parametro id con el nobre de la categoria por si el usuario no sabe el id de la categoria
-{
-        "categoria": "Novela"
-}
 
 
 3. 
@@ -230,3 +228,23 @@ en este caso se puede cambiar los 3 datos siempre y cuando el id exista o el mai
 }
 
 tambien se puede cambiar los datos por separado enviado en json 1 elemento a la vez
+
+## Verbo GET (busqueda por ID y en caso de user por Email registrado)
+
+
+
+
+## Verebo POST
+(Los parametros ID son autoincrementables no se tiene que pasar)
+
+
+
+## VERBO DELETE
+
+
+
+
+
+
+## VERBO PUT
+
