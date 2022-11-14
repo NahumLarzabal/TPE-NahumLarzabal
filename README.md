@@ -87,7 +87,7 @@ se busca el libro por el id y el campo de genero tiene que ser con nombre, de ah
 }
 
 
-# El Recurso de Categorias  📚
+# El Recurso de Categorias  ☁️ :trollface:
 ## Funcionalidades del recurso GET '*Categorias*' 📗
 2.  
 ej: ` http://localhost/web2/TPE-NahumLarzabal/api/categorias `
@@ -131,7 +131,7 @@ hay que enviar un json con estos parametros, ademas la url distinge el parametro
 
 
 
-# El Recurso de Comentarios📚
+# El Recurso de Comentarios☁️
 ## Funcionalidades del recurso GET '*Comentarios*' 📗
 3. 
 ej: ` http://localhost/web2/TPE-NahumLarzabal/api/comentarios `
@@ -189,7 +189,7 @@ ej: `http://localhost/web2/TPE-NahumLarzabal/api/comentarios/119/libro/1`
 para eliminar un comentario de un libro hay que saber el id del libro y el id del comentario
 
 
-# El Recurso de Usuarios  📚
+# El Recurso de Usuarios  👨‍👩‍👧‍👦👨‍👩‍👧‍👦
 
 ## Funcionalidades del recurso GET '*Usuarios*' 📗
 4. 
@@ -245,7 +245,7 @@ en este caso se puede cambiar los 3 datos siempre y cuando el id exista o el mai
 *tambien se puede cambiar los datos por separado enviado en json 1 elemento a la vez*
 
 
-# El Recurso de Usuarios por meido de Autorizacion 📚
+# El Recurso de Usuarios por meido de Autorizacion ✔️
 
 ## Funcionalidades del recurso GET '*Usuarios*' 📗
 ## Funcionalidades del recurso POST '*Usuarios*'📘
