@@ -206,9 +206,6 @@ class ApiController{
         if($str == "nombre"){
             $value = "nombre_libro";
         }
-        if($str == "nombre"){
-            $value = "nombre_libro";
-        }
         if($str == "precio"){
             $value = "precio";
         }
@@ -336,7 +333,10 @@ if(!empty($_GET['page'])){
                 }
             }
         }
-        }else  if(empty($_GET['page']) && $_GET['page']!=0 ){
+        }else{
+            return $this->view->response("limit no puede ser 0",400);
+        }
+    }else  if(empty($_GET['page']) && $_GET['page']!=0){
             if(!empty($_GET['sort']) && empty($_GET['limit']) && !empty($_GET['filtro']) &&!empty($_GET['orderby']) && empty($_GET['page'])){
                 $this->filtroOffPage();            
             }else if (!empty($_GET['sort']) &&!empty($_GET['orderby']) ){
@@ -355,12 +355,9 @@ if(!empty($_GET['page'])){
                 return $this->view->response("No se encontro nada",400);
             } 
         }else{
-            return $this->view->response("limit no puede ser 0",400);
-        }       
-    }else{
-        return $this->view->response("page no puede ser 0",400);
-    }
-
+            return $this->view->response("page no puede ser 0",400);
+        }
+        
 }
 
 
